@@ -3,13 +3,13 @@ import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BasicReativeButton extends StatelessWidget {
+class BasicReactiveButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String title;
   final Widget? content;
   final double? height;
   final double? width;
-  const BasicReativeButton(
+  const BasicReactiveButton(
       {required this.onPressed,
       this.title = '',
       this.height,

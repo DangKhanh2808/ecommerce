@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class UserCreationReq {
   String? firstName;
   String? lastName;
