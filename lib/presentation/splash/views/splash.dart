@@ -18,7 +18,7 @@ class SlashPage extends StatelessWidget {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const SigninPage(),
+              builder: (context) => SigninPage(),
             ),
           );
         }

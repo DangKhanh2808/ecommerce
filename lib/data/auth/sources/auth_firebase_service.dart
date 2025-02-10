@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/data/auth/models/user_creation_req.dart';
+import 'package:ecommerce/data/auth/models/user_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthFirebaseService {
   Future<Either> signUp(UserCreationReq user);
+  Future<Either> signIn(UserSigninReq user);
   Future<Either> getAges();
 }
 
@@ -59,5 +61,11 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
     } catch (e) {
       return Left('Please try again');
     }
+  }
+
+  @override
+  Future<Either> signIn(UserSigninReq user) {
+    // TODO: implement signIn
+    throw UnimplementedError();
   }
 }
