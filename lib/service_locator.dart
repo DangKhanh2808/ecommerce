@@ -2,6 +2,7 @@ import 'package:ecommerce/data/auth/respository/auth_respository_imple.dart';
 import 'package:ecommerce/data/auth/sources/auth_firebase_service.dart';
 import 'package:ecommerce/domain/auth/respository/auth.dart';
 import 'package:ecommerce/domain/auth/usecases/get_ages.dart';
+import 'package:ecommerce/domain/auth/usecases/is_logged_in.dart';
 import 'package:ecommerce/domain/auth/usecases/send_password_reset_email.dart';
 import 'package:ecommerce/domain/auth/usecases/signin.dart';
 import 'package:ecommerce/domain/auth/usecases/signup.dart';
@@ -38,5 +39,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<SendPasswordResetEmailUseCase>(
     SendPasswordResetEmailUseCase(),
+  );
+
+  sl.registerSingleton<IsLoggedInUseCase>(
+    IsLoggedInUseCase(),
   );
 }

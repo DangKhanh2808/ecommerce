@@ -8,6 +8,8 @@ abstract class AuthFirebaseService {
   Future<Either> signUp(UserCreationReq user);
   Future<Either> signIn(UserSigninReq user);
   Future<Either> getAges();
+  Future<Either> sendPasswordResetEmail(String email);
+  Future<bool> isLoggedIn();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -64,8 +66,47 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
   }
 
   @override
-  Future<Either> signIn(UserSigninReq user) {
-    // TODO: implement signIn
-    throw UnimplementedError();
+  Future<Either> signIn(UserSigninReq user) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: user.email!,
+        password: user.password!,
+      );
+
+      return Right(
+        'Sign in was successfully',
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = '';
+
+      if (e.code == 'invalid-email') {
+        errorMessage = 'Not user found for that email.';
+      } else if (e.code == 'invalid-credential') {
+        errorMessage = 'Wrong password provided for that user.';
+      }
+
+      return Left(
+        errorMessage,
+      );
+    }
+  }
+
+  @override
+  Future<Either> sendPasswordResetEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return Right('Email sent successfully');
+    } catch (e) {
+      return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<bool> isLoggedIn() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

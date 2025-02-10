@@ -2,11 +2,11 @@ import 'package:ecommerce/common/bloc/button/button_state.dart';
 import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
-import 'package:ecommerce/common/widgets/button/basic_app_button.dart';
 import 'package:ecommerce/common/widgets/button/basic_reative_button.dart';
 import 'package:ecommerce/data/auth/models/user_signin.dart';
 import 'package:ecommerce/domain/auth/usecases/signin.dart';
 import 'package:ecommerce/presentation/auth/views/forgot_password.dart';
+import 'package:ecommerce/presentation/home/pages/home.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,10 +35,13 @@ class EnterPasswordPage extends StatelessWidget {
             listener: (context, state) {
               if (state is ButtonFailureState) {
                 var snackbar = SnackBar(
-                  content: Text(state.errorMessage),
-                  behavior: SnackBarBehavior.floating,
-                );
+                    content: Text(state.errorMessage),
+                    behavior: SnackBarBehavior.floating);
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              }
+
+              if (state is ButtonSuccessState) {
+                AppNavigator.pushAndRemove(context, HomePage());
               }
             },
             child: Column(
@@ -85,12 +88,18 @@ class EnterPasswordPage extends StatelessWidget {
   }
 
   Widget _continueButton(BuildContext context) {
-    return BasicReactiveButton(
-      onPressed: () {
-        context.read<ButtonStateCubit>().execute(usecase: SigninpUseCase());
-      },
-      title: 'Continue',
-    );
+    return Builder(builder: (context) {
+      return BasicReactiveButton(
+        onPressed: () {
+          signinReq.password = _passwordCon.text;
+          context.read<ButtonStateCubit>().execute(
+                usecase: SigninpUseCase(),
+                params: signinReq,
+              );
+        },
+        title: 'Continue',
+      );
+    });
   }
 
   Widget _forgotPassword(BuildContext context) {
@@ -104,7 +113,7 @@ class EnterPasswordPage extends StatelessWidget {
               ..onTap = () {
                 AppNavigator.push(
                   context,
-                  const ForgotPasswordPage(),
+                  ForgotPasswordPage(),
                 );
               },
             style: TextStyle(
