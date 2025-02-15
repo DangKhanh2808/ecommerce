@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+
   flutter:
     sdk: flutter
 
@@ -39,6 +40,7 @@ dependencies:
   firebase_auth: ^5.4.0
   cloud_firestore: ^5.6.1
   flutter_bloc: ^8.1.6
+  json_annotation: ^4.0.1
   
 
 dev_dependencies:
@@ -51,6 +53,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  build_runner: ^2.0.0
+  json_serializable: ^6.9.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

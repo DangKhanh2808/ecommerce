@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+
 import 'package:ecommerce/data/auth/models/user_creation_req.dart';
 import 'package:ecommerce/data/auth/models/user_signin.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthFirebaseService {
@@ -10,6 +12,7 @@ abstract class AuthFirebaseService {
   Future<Either> getAges();
   Future<Either> sendPasswordResetEmail(String email);
   Future<bool> isLoggedIn();
+  Future<Either> getUser();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -26,6 +29,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
           .collection('Users')
           .doc(returnedDate.user!.uid)
           .set({
+        'userId': returnedDate.user!.uid,
         'firstName': user.firstName,
         'lastName': user.lastName,
         'email': user.email,
@@ -107,6 +111,21 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  @override
+  Future<Either> getUser() async {
+    try {
+      var currentUser = FirebaseAuth.instance.currentUser;
+      var userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(currentUser?.uid)
+          .get()
+          .then((value) => value.data());
+      return Right(userData);
+    } catch (e) {
+      return const Left('Please try again');
     }
   }
 }
