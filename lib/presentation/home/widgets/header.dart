@@ -1,5 +1,7 @@
+import 'package:ecommerce/core/configs/assets/app_images.dart';
 import 'package:ecommerce/core/configs/assets/app_vector.dart';
 import 'package:ecommerce/core/configs/theme/app_colors.dart';
+import 'package:ecommerce/domain/auth/entity/user.dart';
 import 'package:ecommerce/presentation/home/bloc/user_infor_display_cubit.dart';
 import 'package:ecommerce/presentation/home/bloc/user_infor_display_state.dart';
 import 'package:flutter/material.dart';
@@ -13,45 +15,71 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UserInforDisplayCubit()..displayUserInfor(),
-      child: BlocBuilder<UserInforDisplayCubit, UserInforDisplayState>(
-        builder: (context, state) {
-          if (state is UserInforLoading) {
-            return Center(child: CircularProgressIndicator());
-          }
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 40,
+          right: 16,
+          left: 16,
+        ),
+        child: BlocBuilder<UserInforDisplayCubit, UserInforDisplayState>(
+          builder: (context, state) {
+            if (state is UserInforLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          if (state is UserInforLoaded) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _profileImage(),
-                _gender(),
-                _card(),
-              ],
-            );
-          }
+            if (state is UserInforLoaded) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _profileImage(state.user),
+                  _gender(state.user),
+                  _card(),
+                ],
+              );
+            }
 
-          return Container();
-        },
+            return Container();
+          },
+        ),
       ),
     );
   }
 
-  Widget _profileImage() {
+  Widget _profileImage(UserEntity user) {
     return Container(
       height: 40,
       width: 40,
-      decoration:
-          const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: user.image.isEmpty
+                ? AssetImage(
+                    AppImages.profile,
+                  )
+                : NetworkImage(
+                    user.image,
+                  )),
+        color: Colors.red,
+        shape: BoxShape.circle,
+      ),
     );
   }
 
-  Widget _gender() {
+  Widget _gender(UserEntity user) {
     return Container(
       height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
       decoration: BoxDecoration(
         color: AppColors.secondBackground,
         borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        user.gender == 1 ? 'Men' : 'Women',
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+        ),
       ),
     );
   }
@@ -65,7 +93,7 @@ class Header extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: SvgPicture.asset(
-        AppVector.bag,
+        AppVectors.bag,
         fit: BoxFit.none,
       ),
     );

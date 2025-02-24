@@ -31,7 +31,7 @@ class PasswordResetEmailPage extends StatelessWidget {
   Widget _emailSending(BuildContext context) {
     return Center(
       child: SvgPicture.asset(
-        AppVector.emailSending,
+        AppVectors.emailSending,
       ),
     );
   }

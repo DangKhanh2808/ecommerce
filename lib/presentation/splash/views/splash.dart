@@ -33,7 +33,7 @@ class SlashPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.primary,
         body: Center(
-          child: SvgPicture.asset(AppVector.appLogo),
+          child: SvgPicture.asset(AppVectors.appLogo),
         ),
       ),
     );

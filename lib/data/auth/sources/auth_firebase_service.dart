@@ -35,6 +35,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
         'email': user.email,
         'age': user.age,
         'gender': user.gender,
+        'image': returnedDate.user!.photoURL,
       });
 
       return Right(
