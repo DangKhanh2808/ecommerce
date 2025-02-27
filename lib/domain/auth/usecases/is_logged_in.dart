@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/usecase/usecase.dart';
-import 'package:ecommerce/domain/auth/respository/auth.dart';
+import 'package:ecommerce/domain/auth/repository/auth.dart';
 import 'package:ecommerce/service_locator.dart';
 
 class IsLoggedInUseCase implements Usecase<bool, dynamic> {
