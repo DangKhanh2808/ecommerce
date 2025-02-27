@@ -1,0 +1,2 @@
+D:/ecommerce/android/app/.cxx/RelWithDebInfo/5b6o3b4r/x86_64/CMakeFiles/edit_cache.dir
+D:/ecommerce/android/app/.cxx/RelWithDebInfo/5b6o3b4r/x86_64/CMakeFiles/rebuild_cache.dir

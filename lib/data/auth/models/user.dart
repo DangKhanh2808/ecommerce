@@ -50,11 +50,12 @@ class UserModel {
 extension UserXModel on UserModel {
   UserEntity toEntity() {
     return UserEntity(
-        userId: userId,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        image: image,
-        gender: gender);
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      image: image,
+      gender: gender,
+    );
   }
 }
