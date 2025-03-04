@@ -6,7 +6,10 @@ import '../../../core/configs/theme/app_colors.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductEntity productEntity;
-  const ProductCard({required this.productEntity, super.key});
+  const ProductCard({
+    required this.productEntity,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

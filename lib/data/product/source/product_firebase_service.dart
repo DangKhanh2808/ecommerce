@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 
 abstract class ProductFirebaseService {
   Future<Either> getTopSelling();
+  Future<Either> getNewIn();
 }
 
 class ProductFirebaseServiceImpl implements ProductFirebaseService {
@@ -12,6 +13,22 @@ class ProductFirebaseServiceImpl implements ProductFirebaseService {
       var returnedDate = await FirebaseFirestore.instance
           .collection('Products')
           .where('salesNumber', isGreaterThanOrEqualTo: 20)
+          .get();
+      return Right(returnedDate.docs.map((e) => e.data()).toList());
+    } catch (e) {
+      return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> getNewIn() async {
+    try {
+      var returnedDate = await FirebaseFirestore.instance
+          .collection('Products')
+          .where(
+            'createdDate',
+            isGreaterThanOrEqualTo: DateTime(2025, 1, 1),
+          )
           .get();
       return Right(returnedDate.docs.map((e) => e.data()).toList());
     } catch (e) {
