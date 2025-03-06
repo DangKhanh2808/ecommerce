@@ -8,7 +8,9 @@ class ProductsDisplayCubit extends Cubit<ProductsDisplayState> {
 
   void displayProducts({dynamic params}) async {
     emit(ProductsLoading());
-    var returnedData = await useCase.call(params: params);
+    var returnedData = await useCase.call(
+      params: params,
+    );
     returnedData.fold((error) {
       emit(LoadProductsFailure());
     }, (data) {
