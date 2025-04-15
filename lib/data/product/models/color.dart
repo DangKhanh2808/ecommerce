@@ -1,34 +1,39 @@
 import 'package:ecommerce/domain/product/entity/color.dart';
 
 class ProductColorModel {
-  final String hexCode;
   final String title;
+  final List<int> rgb;
 
   ProductColorModel({
-    required this.hexCode,
     required this.title,
+    required this.rgb,
   });
 
   Map<String, dynamic> toMap() {
-    return {
-      'hexCode': hexCode,
+    return <String, dynamic>{
       'title': title,
+      'rgb': rgb,
     };
   }
 
   factory ProductColorModel.fromMap(Map<String, dynamic> map) {
     return ProductColorModel(
-      hexCode: map['hexCode'] as String,
       title: map['title'] as String,
+      rgb: List<int>.from(
+        map['rgb'].map((e) => e),
+      ),
     );
   }
 }
 
 extension ProductColorXModel on ProductColorModel {
   ProductColorEntity toEntity() {
-    return ProductColorEntity(
-      hexCode: hexCode,
-      title: title,
-    );
+    return ProductColorEntity(title: title, rgb: rgb);
+  }
+}
+
+extension ProductColorXEntity on ProductColorEntity {
+  ProductColorModel fromEntity() {
+    return ProductColorModel(title: title, rgb: rgb);
   }
 }
