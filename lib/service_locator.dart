@@ -2,6 +2,8 @@ import 'package:ecommerce/data/auth/repository/auth_respository_imple.dart';
 import 'package:ecommerce/data/auth/sources/auth_firebase_service.dart';
 import 'package:ecommerce/data/category/repository/category.dart';
 import 'package:ecommerce/data/category/sources/category_firebase_service.dart';
+import 'package:ecommerce/data/order/repository/order.dart';
+import 'package:ecommerce/data/order/source/order_firebase_service.dart';
 import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/data/product/source/product_firebase_service.dart';
 import 'package:ecommerce/domain/auth/repository/auth.dart';
@@ -13,6 +15,8 @@ import 'package:ecommerce/domain/auth/usecases/signin.dart';
 import 'package:ecommerce/domain/auth/usecases/signup.dart';
 import 'package:ecommerce/domain/category/repository/category.dart';
 import 'package:ecommerce/domain/category/usecases/get_categories.dart';
+import 'package:ecommerce/domain/order/repository/order.dart';
+import 'package:ecommerce/domain/order/usecases/add_to_cart.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
 import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/domain/product/usecases/get_products_by_category_id.dart';
@@ -37,6 +41,10 @@ Future<void> initializeDependencies() async {
     ProductFirebaseServiceImpl(),
   );
 
+  sl.registerSingleton<OrderFirebaseService>(
+    OrderFirebaseServiceImpl(),
+  );
+
   //Repositories
 
   sl.registerSingleton<AuthRepository>(
@@ -51,6 +59,9 @@ Future<void> initializeDependencies() async {
     ProductRepositoryImpl(),
   );
 
+  sl.registerSingleton<OrderRepository>(
+    OrderRepositoryImpl(),
+  );
   //UseCases
 
   sl.registerSingleton<SignupUseCase>(
@@ -95,5 +106,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetProductsByTitleUseCase>(
     GetProductsByTitleUseCase(),
+  );
+
+  sl.registerSingleton<AddToCartUseCase>(
+    AddToCartUseCase(),
   );
 }
