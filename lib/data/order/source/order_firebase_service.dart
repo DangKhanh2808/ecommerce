@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/data/order/model/add_to_cart_req.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 abstract class OrderFirebaseService {
   Future<Either> addToCart(AddToCartReq addToCartReq);
+  Future<Either> getCartProducts();
 }
 
 class OrderFirebaseServiceImpl extends OrderFirebaseService {
@@ -27,6 +27,21 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
       return Left(
         'Please try again',
       );
+    }
+  }
+
+  @override
+  Future<Either> getCartProducts() async {
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      var returnedDate = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user!.uid)
+          .collection('Cart')
+          .get();
+      return Right(returnedDate.docs.map((e) => e.data()).toList());
+    } catch (e) {
+      return Left('Please try again');
     }
   }
 }
