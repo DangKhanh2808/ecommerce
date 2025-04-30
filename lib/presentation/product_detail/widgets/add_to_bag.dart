@@ -40,24 +40,24 @@ class AddToBag extends StatelessWidget {
               context.read<ButtonStateCubit>().execute(
                   usecase: AddToCartUseCase(),
                   params: AddToCartReq(
-                      productId: productEntity.productId,
-                      productTitle: productEntity.title,
-                      productQuantity:
-                          context.read<ProductQuantityCubit>().state,
-                      productColor: productEntity
-                          .colors[context
-                              .read<ProductColorSelectionCubit>()
-                              .selectdIndex]
-                          .title,
-                      productSize: productEntity.sizes[context
-                          .read<ProductSizeSelectionCubit>()
-                          .selectedIndex],
-                      productPrice: productEntity.price.toDouble(),
-                      totalPrice: ProductPriceHelper.provideCurrentPrice(
-                              productEntity) *
-                          context.read<ProductQuantityCubit>().state,
-                      productImage: productEntity.images[0],
-                      createdDate: DateTime.now().toString()));
+                    productId: productEntity.productId,
+                    productTitle: productEntity.title,
+                    productQuantity: context.read<ProductQuantityCubit>().state,
+                    productColor: productEntity
+                        .colors[context
+                            .read<ProductColorSelectionCubit>()
+                            .selectdIndex]
+                        .title,
+                    productSize: productEntity.sizes[context
+                        .read<ProductSizeSelectionCubit>()
+                        .selectedIndex],
+                    productPrice: productEntity.price.toDouble(),
+                    totalPrice:
+                        ProductPriceHelper.provideCurrentPrice(productEntity) *
+                            context.read<ProductQuantityCubit>().state,
+                    productImage: productEntity.images[0],
+                    createdDate: DateTime.now().toString(),
+                  ));
             },
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

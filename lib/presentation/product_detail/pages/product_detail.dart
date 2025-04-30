@@ -10,6 +10,7 @@ import 'package:ecommerce/presentation/product_detail/widgets/product_price.dart
 import 'package:ecommerce/presentation/product_detail/widgets/product_quantity.dart';
 import 'package:ecommerce/presentation/product_detail/widgets/product_title.dart';
 import 'package:ecommerce/presentation/product_detail/widgets/selected_color.dart';
+import 'package:ecommerce/presentation/product_detail/widgets/selected_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,12 +57,12 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              // SelectedSize(
-              //   productEntity: productEntity,
-              // ),
-              // const SizedBox(
-              //   height: 15,
-              // ),
+              SelectedSize(
+                productEntity: productEntity,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
               SelectedColor(
                 productEntity: productEntity,
               ),

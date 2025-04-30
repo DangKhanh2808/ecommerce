@@ -8,6 +8,7 @@ class ProductOrderedEntity {
   final double totalPrice;
   final String productImage;
   final String createdDate;
+  final String id;
 
   ProductOrderedEntity({
     required this.productId,
@@ -19,5 +20,6 @@ class ProductOrderedEntity {
     required this.totalPrice,
     required this.productImage,
     required this.createdDate,
+    required this.id,
   });
 }

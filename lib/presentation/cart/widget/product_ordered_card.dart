@@ -8,7 +8,10 @@ import '../../../core/configs/theme/app_colors.dart';
 
 class ProductOrderedCard extends StatelessWidget {
   final ProductOrderedEntity productOrderedEntity;
-  const ProductOrderedCard({required this.productOrderedEntity, super.key});
+  const ProductOrderedCard({
+    required this.productOrderedEntity,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +120,7 @@ class ProductOrderedCard extends StatelessWidget {
                   onTap: () {
                     context
                         .read<CartProductsDisplayCubit>()
-                        // .removeProduct(productOrderedEntity);
+                        .removeProduct(productOrderedEntity);
                   },
                   child: Container(
                     height: 23,
