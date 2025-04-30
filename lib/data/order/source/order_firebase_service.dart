@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/data/order/model/add_to_cart_req.dart';
+import 'package:ecommerce/data/order/model/order_registration_req.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class OrderFirebaseService {
   Future<Either> addToCart(AddToCartReq addToCartReq);
   Future<Either> getCartProducts();
   Future<Either> removeCartProduct(String id);
+  Future<Either> orderResitration(OrderRegistrationReq order);
 }
 
 class OrderFirebaseServiceImpl extends OrderFirebaseService {
@@ -63,6 +65,23 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
           .collection('Cart')
           .doc(id)
           .delete();
+      return const Right('Product removed successfully');
+    } catch (e) {
+      return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> orderResitration(OrderRegistrationReq order) async {
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user!.uid)
+          .collection('Orders')
+          .add(
+            order.toMap(),
+          );
       return const Right('Product removed successfully');
     } catch (e) {
       return const Left('Please try again');
