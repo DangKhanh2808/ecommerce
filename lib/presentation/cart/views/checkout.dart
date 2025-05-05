@@ -1,13 +1,14 @@
 import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:ecommerce/common/helper/cart/cart.dart';
+import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/button/basic_reative_button.dart';
 import 'package:ecommerce/data/order/model/order_registration_req.dart';
 import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:ecommerce/domain/order/usecases/order_registration.dart';
+import 'package:ecommerce/presentation/cart/views/order_placed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/bloc/button/button_state.dart';
-import '../../../common/helper/navigator/app_navigator.dart';
 import '../../../common/widgets/appbar/app_bar.dart';
 
 class CheckOutPage extends StatelessWidget {
@@ -26,9 +27,9 @@ class CheckOutPage extends StatelessWidget {
         create: (context) => ButtonStateCubit(),
         child: BlocListener<ButtonStateCubit, ButtonState>(
           listener: (context, state) {
-            // if (state is ButtonSuccessState) {
-            //   AppNavigator.pushAndRemove(context,const OrderPlacedPage());
-            // }
+            if (state is ButtonSuccessState) {
+              AppNavigator.pushAndRemove(context, const OrderPlacedPage());
+            }
             if (state is ButtonFailureState) {
               var snackbar = SnackBar(
                 content: Text(state.errorMessage),

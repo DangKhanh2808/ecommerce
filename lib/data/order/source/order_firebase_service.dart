@@ -82,6 +82,15 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
           .add(
             order.toMap(),
           );
+
+      for (var item in order.products) {
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user.uid)
+            .collection('Cart')
+            .doc(item.id)
+            .delete();
+      }
       return const Right('Product removed successfully');
     } catch (e) {
       return const Left('Please try again');
