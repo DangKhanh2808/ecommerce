@@ -14,7 +14,10 @@ import '../../../common/bloc/button/button_state.dart';
 
 class EnterPasswordPage extends StatelessWidget {
   final UserSigninReq signinReq;
-  EnterPasswordPage({required this.signinReq, super.key});
+  EnterPasswordPage({
+    required this.signinReq,
+    super.key,
+  });
 
   final TextEditingController _passwordCon = TextEditingController();
 
@@ -55,7 +58,10 @@ class EnterPasswordPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                _forgotPassword(context)
+                _forgotPassword(context),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
@@ -83,10 +89,9 @@ class EnterPasswordPage extends StatelessWidget {
       return BasicReactiveButton(
           onPressed: () {
             signinReq.password = _passwordCon.text;
-            context.read<ButtonStateCubit>().execute(
-                  usecase: SigninUseCase(),
-                  params: signinReq,
-                );
+            context
+                .read<ButtonStateCubit>()
+                .execute(usecase: SigninUseCase(), params: signinReq);
           },
           title: 'Continue');
     });

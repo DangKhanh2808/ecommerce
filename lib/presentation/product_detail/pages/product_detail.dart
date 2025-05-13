@@ -42,7 +42,6 @@ class ProductDetailPage extends StatelessWidget {
             productEntity: productEntity,
           ),
         ),
-        // bottomNavigationBar: AddToBag(productEntity: productEntity),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

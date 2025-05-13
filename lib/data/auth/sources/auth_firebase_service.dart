@@ -71,28 +71,33 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
   }
 
   @override
-  Future<Either> signIn(UserSigninReq user) async {
+  Future<Either<String, String>> signIn(UserSigninReq user) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user.email!,
         password: user.password!,
       );
-
-      return Right(
-        'Sign in was successfully',
-      );
+      return Right('Đăng nhập thành công');
     } on FirebaseAuthException catch (e) {
-      String errorMessage = '';
+      String errorMessage;
 
-      if (e.code == 'invalid-email') {
-        errorMessage = 'Not user found for that email.';
-      } else if (e.code == 'invalid-credential') {
-        errorMessage = 'Wrong password provided for that user.';
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = 'Email không hợp lệ.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'Không tìm thấy tài khoản với email này.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Sai mật khẩu.';
+          break;
+        default:
+          errorMessage = e.message ?? 'Đăng nhập thất bại.';
       }
 
-      return Left(
-        errorMessage,
-      );
+      return Left(errorMessage);
+    } catch (e) {
+      return Left('Đã xảy ra lỗi không xác định: ${e.toString()}');
     }
   }
 
