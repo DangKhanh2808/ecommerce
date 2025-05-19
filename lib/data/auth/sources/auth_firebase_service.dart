@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-
 import 'package:ecommerce/data/auth/models/user_creation_req.dart';
 import 'package:ecommerce/data/auth/models/user_signin.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthFirebaseService {
   Future<Either> signUp(UserCreationReq user);
@@ -13,6 +13,7 @@ abstract class AuthFirebaseService {
   Future<Either> sendPasswordResetEmail(String email);
   Future<bool> isLoggedIn();
   Future<Either> getUser();
+  Future<Either> signOut();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -72,12 +73,19 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
 
   @override
   Future<Either<String, String>> signIn(UserSigninReq user) async {
+    if (user.email == null ||
+        user.password == null ||
+        user.email!.isEmpty ||
+        user.password!.isEmpty) {
+      return const Left('Email hoặc mật khẩu không được để trống.');
+    }
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user.email!,
         password: user.password!,
       );
-      return Right('Đăng nhập thành công');
+      return const Right('Đăng nhập thành công');
     } on FirebaseAuthException catch (e) {
       String errorMessage;
 
@@ -132,6 +140,20 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       return Right(userData);
     } catch (e) {
       return const Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      return const Right(true);
+    } catch (e) {
+      return Left('Please try again');
     }
   }
 }

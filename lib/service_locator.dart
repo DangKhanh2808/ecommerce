@@ -12,6 +12,7 @@ import 'package:ecommerce/domain/auth/usecases/get_user.dart';
 import 'package:ecommerce/domain/auth/usecases/is_logged_in.dart';
 import 'package:ecommerce/domain/auth/usecases/send_password_reset_email.dart';
 import 'package:ecommerce/domain/auth/usecases/signin.dart';
+import 'package:ecommerce/domain/auth/usecases/signout.dart';
 import 'package:ecommerce/domain/auth/usecases/signup.dart';
 import 'package:ecommerce/domain/category/repository/category.dart';
 import 'package:ecommerce/domain/category/usecases/get_categories.dart';
@@ -145,5 +146,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetOrdersUseCase>(
     GetOrdersUseCase(),
+  );
+
+  sl.registerSingleton<SignoutUseCase>(
+    SignoutUseCase(),
   );
 }

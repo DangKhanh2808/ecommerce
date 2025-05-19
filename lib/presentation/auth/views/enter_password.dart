@@ -89,6 +89,16 @@ class EnterPasswordPage extends StatelessWidget {
       return BasicReactiveButton(
           onPressed: () {
             signinReq.password = _passwordCon.text;
+
+            if (signinReq.email == null || signinReq.email!.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Email không được để trống'),
+                ),
+              );
+              return;
+            }
+
             context
                 .read<ButtonStateCubit>()
                 .execute(usecase: SigninUseCase(), params: signinReq);

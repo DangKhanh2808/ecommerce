@@ -46,4 +46,9 @@ class AuthrepositoryImple extends AuthRepository {
       },
     );
   }
+
+  @override
+  Future<Either> signOut() async {
+    return await sl<AuthFirebaseService>().signOut();
+  }
 }
