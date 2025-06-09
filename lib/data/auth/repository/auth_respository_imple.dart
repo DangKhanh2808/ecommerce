@@ -51,4 +51,9 @@ class AuthrepositoryImple extends AuthRepository {
   Future<Either> signOut() async {
     return await sl<AuthFirebaseService>().signOut();
   }
+
+  @override
+  Future<String> getRole() async {
+    return await sl<AuthFirebaseService>().getRole();
+  }
 }

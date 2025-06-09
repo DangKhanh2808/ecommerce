@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.1'  // Phiên bản AGP
+        classpath 'com.google.gms:google-services:4.3.15' // nếu dùng Firebase
+        // Thêm các classpath khác nếu có
+    }
+}
+
 allprojects {
     repositories {
         google()

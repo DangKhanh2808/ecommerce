@@ -5,14 +5,14 @@ import 'package:ecommerce/common/widgets/button/basic_reative_button.dart';
 import 'package:ecommerce/core/configs/theme/app_colors.dart';
 import 'package:ecommerce/data/auth/models/user_creation_req.dart';
 import 'package:ecommerce/domain/auth/usecases/signup.dart';
-import 'package:ecommerce/presentation/auth/bloc/age_display_cubit.dart';
-import 'package:ecommerce/presentation/auth/bloc/age_selection_cubit.dart';
-import 'package:ecommerce/presentation/auth/bloc/gender_selection_cubit.dart';
-import 'package:ecommerce/presentation/auth/widget/ages.dart';
+import 'package:ecommerce/presentation/auth/user/bloc/age_display_cubit.dart';
+import 'package:ecommerce/presentation/auth/user/bloc/age_selection_cubit.dart';
+import 'package:ecommerce/presentation/auth/user/bloc/gender_selection_cubit.dart';
+import 'package:ecommerce/presentation/auth/user/widget/ages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/widgets/appbar/app_bar.dart';
+import '../../../../common/widgets/appbar/app_bar.dart';
 
 class GenderAndAgeSelectionPage extends StatelessWidget {
   final UserCreationReq userCreationReq;

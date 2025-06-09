@@ -3,11 +3,11 @@ import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
 import 'package:ecommerce/common/widgets/button/basic_reative_button.dart';
 import 'package:ecommerce/domain/auth/usecases/send_password_reset_email.dart';
-import 'package:ecommerce/presentation/auth/views/password_reset_email.dart';
+import 'package:ecommerce/presentation/auth/user/views/password_reset_email.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/bloc/button/button_state.dart';
+import '../../../../common/bloc/button/button_state.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   ForgotPasswordPage({super.key});

@@ -2,7 +2,7 @@ import 'package:ecommerce/common/bloc/button/button_state.dart';
 import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
-import 'package:ecommerce/presentation/auth/views/signin.dart';
+import 'package:ecommerce/presentation/auth/user/views/signin.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_favorite_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_order_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/signout.dart';

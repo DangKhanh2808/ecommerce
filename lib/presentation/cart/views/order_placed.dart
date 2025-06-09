@@ -2,7 +2,7 @@ import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/button/basic_app_button.dart';
 import 'package:ecommerce/core/configs/assets/app_images.dart';
 import 'package:ecommerce/core/configs/theme/app_colors.dart';
-import 'package:ecommerce/presentation/home/pages/home.dart';
+import 'package:ecommerce/presentation/home/user/pages/home.dart';
 import 'package:flutter/material.dart';
 
 class OrderPlacedPage extends StatelessWidget {

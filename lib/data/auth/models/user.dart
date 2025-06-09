@@ -10,6 +10,8 @@ class UserModel {
   final String email;
   final String image;
   final int gender;
+  final String role;
+  // Assuming role is a string, adjust as necessary
 
   UserModel(
       {required this.userId,
@@ -17,7 +19,8 @@ class UserModel {
       required this.lastName,
       required this.email,
       required this.image,
-      required this.gender});
+      required this.gender,
+      required this.role});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -27,6 +30,7 @@ class UserModel {
       'email': email,
       'image': image,
       'gender': gender,
+      'role': role, // Assuming role is a string, adjust as necessary
     };
   }
 
@@ -38,6 +42,7 @@ class UserModel {
       email: map['email'] as String,
       image: map['image'] ?? '',
       gender: map['gender'] as int,
+      role: map['role'] ?? 'user', // Default role if not provided
     );
   }
 
@@ -56,6 +61,7 @@ extension UserXModel on UserModel {
       email: email,
       image: image,
       gender: gender,
+      role: role, // Assuming a default role, adjust as necessary
     );
   }
 }

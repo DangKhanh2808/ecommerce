@@ -4,13 +4,13 @@ import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
 import 'package:ecommerce/common/widgets/button/basic_reative_button.dart';
 import 'package:ecommerce/data/auth/models/user_signin.dart';
 import 'package:ecommerce/domain/auth/usecases/signin.dart';
-import 'package:ecommerce/presentation/auth/views/forgot_password.dart';
-import 'package:ecommerce/presentation/home/pages/home.dart';
+import 'package:ecommerce/presentation/auth/user/views/forgot_password.dart';
+import 'package:ecommerce/presentation/home/user/pages/home.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/bloc/button/button_state.dart';
+import '../../../../common/bloc/button/button_state.dart';
 
 class EnterPasswordPage extends StatelessWidget {
   final UserSigninReq signinReq;

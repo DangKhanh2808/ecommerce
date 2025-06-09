@@ -1,7 +1,7 @@
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/button/basic_app_button.dart';
 import 'package:ecommerce/core/configs/assets/app_vector.dart';
-import 'package:ecommerce/presentation/auth/views/signin.dart';
+import 'package:ecommerce/presentation/auth/user/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

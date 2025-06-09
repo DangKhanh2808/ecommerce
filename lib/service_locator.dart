@@ -8,6 +8,7 @@ import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/data/product/source/product_firebase_service.dart';
 import 'package:ecommerce/domain/auth/repository/auth.dart';
 import 'package:ecommerce/domain/auth/usecases/get_ages.dart';
+import 'package:ecommerce/domain/auth/usecases/get_role.dart';
 import 'package:ecommerce/domain/auth/usecases/get_user.dart';
 import 'package:ecommerce/domain/auth/usecases/is_logged_in.dart';
 import 'package:ecommerce/domain/auth/usecases/send_password_reset_email.dart';
@@ -150,5 +151,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<SignoutUseCase>(
     SignoutUseCase(),
+  );
+
+  sl.registerSingleton<GetRoleUseCase>(
+    GetRoleUseCase(),
   );
 }

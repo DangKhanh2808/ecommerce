@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:ecommerce/data/auth/models/user.dart';
 import 'package:ecommerce/data/auth/models/user_creation_req.dart';
 import 'package:ecommerce/data/auth/models/user_signin.dart';
 
@@ -14,6 +15,7 @@ abstract class AuthFirebaseService {
   Future<bool> isLoggedIn();
   Future<Either> getUser();
   Future<Either> signOut();
+  Future<String> getRole();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -155,5 +157,16 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
     } catch (e) {
       return Left('Please try again');
     }
+  }
+
+  @override
+  Future<String> getRole() async {
+    var currentUser = FirebaseAuth.instance.currentUser;
+    var userData = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser?.uid)
+        .get();
+
+    return UserModel.fromMap(userData.data() ?? {}).toEntity().role;
   }
 }

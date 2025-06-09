@@ -1,8 +1,9 @@
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/core/configs/assets/app_vector.dart';
 import 'package:ecommerce/core/configs/theme/app_colors.dart';
-import 'package:ecommerce/presentation/auth/views/signin.dart';
-import 'package:ecommerce/presentation/home/pages/home.dart';
+import 'package:ecommerce/presentation/auth/user/views/signin.dart';
+import 'package:ecommerce/presentation/home/admin/pages/admin_home.dart';
+import 'package:ecommerce/presentation/home/user/pages/home.dart';
 import 'package:ecommerce/presentation/splash/bloc/splash_cubit.dart';
 import 'package:ecommerce/presentation/splash/bloc/splash_state.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +25,17 @@ class SlashPage extends StatelessWidget {
         }
 
         if (state is AuthenticatedState) {
-          AppNavigator.pushReplacement(
-            context,
-            HomePage(),
-          );
+          if (state.role == 'user') {
+            AppNavigator.pushReplacement(
+              context,
+              const HomePage(),
+            );
+          } else {
+            AppNavigator.pushReplacement(
+              context,
+              const AdminHomePage(),
+            );
+          }
         }
       },
       child: Scaffold(
