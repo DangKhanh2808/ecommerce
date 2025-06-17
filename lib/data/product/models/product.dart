@@ -15,51 +15,80 @@ class ProductModel {
   final List<String> sizes;
   final String title;
 
-  ProductModel({
+  const ProductModel({
     required this.categoryId,
-    required this.colors,
+    this.colors = const [],
     required this.createdDate,
-    required this.discountedPrice,
-    required this.gender,
-    required this.images,
+    this.discountedPrice = 0,
+    this.gender = 0,
+    this.images = const [],
     required this.price,
     required this.productId,
-    required this.salesNumber,
-    required this.sizes,
+    this.salesNumber = 0,
+    this.sizes = const [],
     required this.title,
   });
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      categoryId: map['categoryId'] as String,
-      colors: List<ProductColorModel>.from(
-          map['colors'].map((e) => ProductColorModel.fromMap(e))),
-      createdDate: map['createdDate'] as Timestamp,
-      discountedPrice: map['discountedPrice'] as num,
-      gender: map['gender'] as int,
-      images: List<String>.from(map['images'].map((e) => e.toString())),
-      price: map['price'] as num,
-      productId: map['productId'] as String,
-      salesNumber: map['salesNumber'] as int,
-      sizes: List<String>.from(map['sizes'].map((e) => e.toString())),
-      title: map['title'] as String,
+      categoryId: map['categoryId'] ?? '',
+      colors: (map['colors'] as List<dynamic>? ?? [])
+          .map((e) => ProductColorModel.fromMap(e))
+          .toList(),
+      createdDate: map['createdDate'] ?? Timestamp.now(),
+      discountedPrice: map['discountedPrice'] ?? 0,
+      gender: map['gender'] ?? 0,
+      images: List<String>.from(map['images'] ?? []),
+      price: map['price'] ?? 0,
+      productId: map['productId'] ?? '',
+      salesNumber: map['salesNumber'] ?? 0,
+      sizes: List<String>.from(map['sizes'] ?? []),
+      title: map['title'] ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'categoryId': categoryId,
       'colors': colors.map((e) => e.toMap()).toList(),
       'createdDate': createdDate,
       'discountedPrice': discountedPrice,
       'gender': gender,
-      'images': images.map((e) => e.toString()).toList(),
+      'images': images,
       'price': price,
-      'sizes': sizes.map((e) => e.toString()).toList(),
       'productId': productId,
       'salesNumber': salesNumber,
+      'sizes': sizes,
       'title': title,
     };
+  }
+
+  ProductModel copyWith({
+    String? categoryId,
+    List<ProductColorModel>? colors,
+    Timestamp? createdDate,
+    num? discountedPrice,
+    int? gender,
+    List<String>? images,
+    num? price,
+    String? productId,
+    int? salesNumber,
+    List<String>? sizes,
+    String? title,
+  }) {
+    return ProductModel(
+      categoryId: categoryId ?? this.categoryId,
+      colors: colors ?? this.colors,
+      createdDate: createdDate ?? this.createdDate,
+      discountedPrice: discountedPrice ?? this.discountedPrice,
+      gender: gender ?? this.gender,
+      images: images ?? this.images,
+      price: price ?? this.price,
+      productId: productId ?? this.productId,
+      salesNumber: salesNumber ?? this.salesNumber,
+      sizes: sizes ?? this.sizes,
+      title: title ?? this.title,
+    );
   }
 }
 
@@ -84,16 +113,17 @@ extension ProductXModel on ProductModel {
 extension ProductXEntity on ProductEntity {
   ProductModel fromEntity() {
     return ProductModel(
-        categoryId: categoryId,
-        colors: colors.map((e) => e.fromEntity()).toList(),
-        createdDate: createdDate,
-        discountedPrice: discountedPrice,
-        gender: gender,
-        images: images,
-        price: price,
-        sizes: sizes,
-        productId: productId,
-        salesNumber: salesNumber,
-        title: title);
+      categoryId: categoryId,
+      colors: colors.map((e) => e.fromEntity()).toList(),
+      createdDate: createdDate,
+      discountedPrice: discountedPrice,
+      gender: gender,
+      images: images,
+      price: price,
+      sizes: sizes,
+      productId: productId,
+      salesNumber: salesNumber,
+      title: title,
+    );
   }
 }

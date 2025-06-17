@@ -101,4 +101,36 @@ class ProductRepositoryImpl extends ProductRepository {
       },
     );
   }
+
+  @override
+  Future<Either> createProduct(ProductEntity product) async {
+    var returnedData =
+        await sl<ProductFirebaseService>().createProduct(product);
+    return returnedData.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        return right(data);
+      },
+    );
+  }
+
+  @override
+  Future<Either> deleteProduct(String productId) {
+    // TODO: implement deleteProduct
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> getAllProducts() {
+    // TODO: implement getAllProducts
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either> updateProduct(ProductEntity product) {
+    // TODO: implement updateProduct
+    throw UnimplementedError();
+  }
 }

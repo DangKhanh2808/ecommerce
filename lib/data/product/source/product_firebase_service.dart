@@ -12,6 +12,7 @@ abstract class ProductFirebaseService {
   Future<Either> addOrRemoveFavoriteProduct(ProductEntity product);
   Future<bool> isFavorite(String id);
   Future<Either> getFavoritesProduct();
+  Future<Either> createProduct(ProductEntity product);
 }
 
 class ProductFirebaseServiceImpl implements ProductFirebaseService {
@@ -136,6 +137,19 @@ class ProductFirebaseServiceImpl implements ProductFirebaseService {
       return Right(returnedData.docs.map((e) => e.data()).toList());
     } catch (e) {
       return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> createProduct(ProductEntity product) async {
+    try {
+      var returnedData = await FirebaseFirestore.instance
+          .collection('Products')
+          .add(product.fromEntity().toMap());
+      await returnedData.update({'productId': returnedData.id});
+      return const Right(true);
+    } catch (error) {
+      return Left('Failed to create product: $error');
     }
   }
 }
