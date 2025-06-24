@@ -9,12 +9,14 @@ class ProductSubmitButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController titleController;
   final TextEditingController priceController;
+  final String? selectedCategoryId;
 
   const ProductSubmitButton({
     super.key,
     required this.formKey,
     required this.titleController,
     required this.priceController,
+    required this.selectedCategoryId,
   });
 
   @override
@@ -33,7 +35,7 @@ class ProductSubmitButton extends StatelessWidget {
                 title: titleController.text,
                 price: num.tryParse(priceController.text) ?? 0,
                 createdDate: Timestamp.now(),
-                categoryId: 'default',
+                categoryId: selectedCategoryId ?? '',
                 discountedPrice: 0,
                 gender: 0,
                 images: [],

@@ -21,7 +21,7 @@ class AddProductTile extends StatelessWidget {
         AppNavigator.push(
           context,
           BlocProvider(
-            create: (_) => ProductAddCubit(productRepository),
+            create: (context) => ProductAddCubit(productRepository),
             child: const ProductAddPage(),
           ),
         );

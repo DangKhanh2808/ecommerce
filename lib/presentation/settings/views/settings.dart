@@ -47,11 +47,11 @@ class SettingsPage extends StatelessWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                SignOutButton(),
+                const AddProductTile(),
                 const SizedBox(
                   height: 15,
                 ),
-                const AddProductTile(),
+                SignOutButton(),
               ],
             ),
           ),
