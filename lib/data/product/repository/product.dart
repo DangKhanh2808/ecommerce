@@ -118,19 +118,23 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Either> deleteProduct(String productId) {
-    // TODO: implement deleteProduct
+    return sl<ProductFirebaseService>().deleteProduct(productId).then(
+          (value) => value.fold(
+            (error) => Left(error),
+            (data) => Right(data),
+          ),
+        );
+  }
+
+  @override
+  Future<Either> updateProduct(ProductEntity product) {
+    // TODO: implement updateProduct
     throw UnimplementedError();
   }
 
   @override
   Future<Either> getAllProducts() {
     // TODO: implement getAllProducts
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either> updateProduct(ProductEntity product) {
-    // TODO: implement updateProduct
     throw UnimplementedError();
   }
 }

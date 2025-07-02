@@ -13,6 +13,7 @@ abstract class ProductFirebaseService {
   Future<bool> isFavorite(String id);
   Future<Either> getFavoritesProduct();
   Future<Either> createProduct(ProductEntity product);
+  Future<Either> deleteProduct(String productId);
 }
 
 class ProductFirebaseServiceImpl implements ProductFirebaseService {
@@ -150,6 +151,19 @@ class ProductFirebaseServiceImpl implements ProductFirebaseService {
       return const Right(true);
     } catch (error) {
       return Left('Failed to create product: $error');
+    }
+  }
+
+  @override
+  Future<Either> deleteProduct(String productId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Products')
+          .doc(productId)
+          .delete();
+      return const Right(true);
+    } catch (error) {
+      return Left('Failed to delete product: $error');
     }
   }
 }
