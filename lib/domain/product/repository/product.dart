@@ -10,7 +10,6 @@ abstract class ProductRepository {
   Future<bool> isFavorite(String productId);
   Future<Either> getFavoritesProduct();
   Future<Either> createProduct(ProductEntity product);
-  Future<Either> getAllProducts();
   Future<Either> updateProduct(ProductEntity product);
   Future<Either> deleteProduct(String productId);
 }

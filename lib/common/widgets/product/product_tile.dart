@@ -6,11 +6,13 @@ import 'package:ecommerce/domain/product/entity/product.dart';
 class ProductTile extends StatelessWidget {
   final ProductEntity product;
   final VoidCallback onDelete;
+  final VoidCallback onTap;
 
   const ProductTile({
     super.key,
     required this.product,
     required this.onDelete,
+    required this.onTap,
   });
 
   @override
@@ -20,6 +22,7 @@ class ProductTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
+        onTap: onTap,
         leading: const Icon(Icons.shopping_bag),
         title: Text(product.title),
         subtitle: Text('Price: ${product.price}'),

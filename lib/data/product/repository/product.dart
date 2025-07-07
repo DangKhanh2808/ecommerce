@@ -128,13 +128,12 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Either> updateProduct(ProductEntity product) {
-    // TODO: implement updateProduct
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either> getAllProducts() {
-    // TODO: implement getAllProducts
-    throw UnimplementedError();
+    var returnedData = sl<ProductFirebaseService>().updateProduct(product);
+    return returnedData.then(
+      (value) => value.fold(
+        (error) => Left(error),
+        (data) => Right(data),
+      ),
+    );
   }
 }

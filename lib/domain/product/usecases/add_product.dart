@@ -6,7 +6,7 @@ import 'package:ecommerce/service_locator.dart';
 
 class AddProductUseCase implements UseCase<Either, ProductEntity> {
   @override
-  Future<Either> call({dynamic params}) {
-    return sl<ProductRepository>().createProduct(params);
+  Future<Either> call({dynamic params}) async {
+    return await sl<ProductRepository>().createProduct(params);
   }
 }

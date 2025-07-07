@@ -14,6 +14,7 @@ abstract class ProductFirebaseService {
   Future<Either> getFavoritesProduct();
   Future<Either> createProduct(ProductEntity product);
   Future<Either> deleteProduct(String productId);
+  Future<Either> updateProduct(ProductEntity product);
 }
 
 class ProductFirebaseServiceImpl implements ProductFirebaseService {
@@ -164,6 +165,19 @@ class ProductFirebaseServiceImpl implements ProductFirebaseService {
       return const Right(true);
     } catch (error) {
       return Left('Failed to delete product: $error');
+    }
+  }
+
+  @override
+  Future<Either> updateProduct(ProductEntity product) async {
+    try {
+      var productRef = FirebaseFirestore.instance
+          .collection('Products')
+          .doc(product.productId);
+      await productRef.update(product.fromEntity().toMap());
+      return const Right(true);
+    } catch (error) {
+      return Left('Failed to update product: $error');
     }
   }
 }

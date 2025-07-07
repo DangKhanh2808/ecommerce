@@ -1,4 +1,4 @@
-import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
+import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/core/configs/theme/app_colors.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
 import 'package:ecommerce/presentation/product/bloc/product_add_cubit.dart';
@@ -18,13 +18,19 @@ class AddProductTile extends StatelessWidget {
       onTap: () {
         final productRepository = GetIt.I<ProductRepository>();
 
-        AppNavigator.push(
+        Navigator.push(
           context,
-          BlocProvider(
-            create: (context) => ProductAddCubit(productRepository),
-            child: const ProductAddPage(),
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => ProductAddCubit(productRepository),
+              child: const ProductAddPage(),
+            ),
           ),
-        );
+        ).then((result) {
+          if (result == true && context.mounted) {
+            context.read<ProductsDisplayCubit>().displayProducts();
+          }
+        });
       },
       child: Container(
         height: 70,

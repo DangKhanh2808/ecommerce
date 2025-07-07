@@ -33,6 +33,7 @@ import 'package:ecommerce/domain/product/usecases/get_products_by_category_id.da
 import 'package:ecommerce/domain/product/usecases/get_products_by_title.dart';
 import 'package:ecommerce/domain/product/usecases/get_top_selling.dart';
 import 'package:ecommerce/domain/product/usecases/is_favorite.dart';
+import 'package:ecommerce/domain/product/usecases/update_product.dart';
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;
@@ -165,5 +166,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<DeleteProductUseCase>(
     DeleteProductUseCase(),
+  );
+
+  sl.registerSingleton<UpdateProductUseCase>(
+    UpdateProductUseCase(),
   );
 }

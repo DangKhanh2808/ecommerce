@@ -26,21 +26,21 @@ class ProductAddPage extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(title: const Text("Thêm sản phẩm")),
-        body: BlocListener<ProductAddCubit, ProductAddState>(
-          listener: (context, state) {
-            if (state is ProductAddSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Thêm sản phẩm thành công!")),
-              );
-            }
-          },
-          child: const Padding(
-            padding: EdgeInsets.all(16),
-            child: ProductAddForm(),
-          ),
-        ),
-      ),
+          appBar: AppBar(title: const Text("Add Product")),
+          body: BlocListener<ProductAddCubit, ProductAddState>(
+            listener: (context, state) {
+              if (state is ProductAddSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Product added successfully!")),
+                );
+                Navigator.pop(context, true);
+              }
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(16),
+              child: ProductAddForm(),
+            ),
+          )),
     );
   }
 }

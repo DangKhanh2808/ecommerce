@@ -1,7 +1,9 @@
 import 'package:ecommerce/common/bloc/button/button_state.dart';
 import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
+import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
+import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/presentation/auth/user/views/signin.dart';
 import 'package:ecommerce/presentation/settings/widgets/add_product_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_favorite_tile.dart';
@@ -19,8 +21,17 @@ class SettingsPage extends StatelessWidget {
       appBar: const BasicAppbar(
         title: Text('Settings'),
       ),
-      body: BlocProvider(
-        create: (context) => ButtonStateCubit(),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ButtonStateCubit(),
+          ),
+          BlocProvider(
+            create: (context) =>
+                ProductsDisplayCubit(useCase: GetNewInUseCase())
+                  ..displayProducts(),
+          ),
+        ],
         child: BlocListener<ButtonStateCubit, ButtonState>(
           listener: (context, state) {
             if (state is ButtonFailureState) {
