@@ -9,6 +9,7 @@ class ProductOrderedEntity {
   final String productImage;
   final String createdDate;
   final String id;
+  final String code;
 
   ProductOrderedEntity({
     required this.productId,
@@ -21,5 +22,6 @@ class ProductOrderedEntity {
     required this.productImage,
     required this.createdDate,
     required this.id,
+    required this.code,
   });
 }

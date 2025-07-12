@@ -7,14 +7,21 @@ class OrderRegistrationReq {
   final String shippingAddress;
   final int itemCount;
   final double totalPrice;
+  final String code;
 
   OrderRegistrationReq({
-    required this.shippingAddress,
     required this.products,
     required this.createdDate,
+    required this.shippingAddress,
     required this.itemCount,
     required this.totalPrice,
-  });
+    String? code,
+  }) : code = code ?? _generateCode();
+
+  static String _generateCode() {
+    final now = DateTime.now();
+    return 'OD-${now.microsecondsSinceEpoch}';
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -23,6 +30,7 @@ class OrderRegistrationReq {
       'itemCount': itemCount,
       'totalPrice': totalPrice,
       'shippingAddress': shippingAddress,
+      'code': code,
     };
   }
 }

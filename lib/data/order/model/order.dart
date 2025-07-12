@@ -31,9 +31,10 @@ class OrderModel {
       itemCount: map['itemCount'] as int,
       totalPrice: map['totalPrice'] as double,
       code: map['code'] as String,
-      orderStatus: List<OrderStatusModel>.from(
-        map['orderStatus'].map((status) => OrderStatusModel.fromMap(status)),
-      ),
+      orderStatus: (map['orderStatus'] as List<dynamic>?)
+              ?.map((status) => OrderStatusModel.fromMap(status))
+              .toList() ??
+          [],
     );
   }
 }
