@@ -1,3 +1,5 @@
+import 'package:ecommerce/domain/product/entity/color.dart';
+import 'package:ecommerce/presentation/product/bloc/image/image_cubit.dart';
 import 'package:ecommerce/presentation/product/bloc/product_add_cubit.dart';
 import 'package:ecommerce/presentation/product/bloc/product_add_state.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ class ProductSubmitButton extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController priceController;
   final String? selectedCategoryId;
+  final ImagePickerCubit imagePickerCubit;
 
   const ProductSubmitButton({
     super.key,
@@ -17,6 +20,7 @@ class ProductSubmitButton extends StatelessWidget {
     required this.titleController,
     required this.priceController,
     required this.selectedCategoryId,
+    required this.imagePickerCubit,
   });
 
   @override
@@ -30,6 +34,7 @@ class ProductSubmitButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: () {
             if (formKey.currentState!.validate()) {
+              final imageUrls = imagePickerCubit.state.imageUrls;
               final product = ProductEntity(
                 productId: '',
                 title: titleController.text,
@@ -38,10 +43,14 @@ class ProductSubmitButton extends StatelessWidget {
                 categoryId: selectedCategoryId ?? '',
                 discountedPrice: 0,
                 gender: 0,
-                images: [],
-                sizes: [],
+                images: imageUrls,
+                sizes: ['35', '37', '40', '42'],
                 salesNumber: 0,
-                colors: [],
+                colors: [
+                  ProductColorEntity(title: 'Black', rgb: [0, 0, 0]),
+                  ProductColorEntity(title: 'White', rgb: [255, 255, 255]),
+                  ProductColorEntity(title: 'Grey', rgb: [204, 204, 204]),
+                ],
               );
               context.read<ProductAddCubit>().createProduct(product);
             }

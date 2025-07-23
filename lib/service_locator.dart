@@ -6,6 +6,7 @@ import 'package:ecommerce/data/order/repository/order.dart';
 import 'package:ecommerce/data/order/source/order_firebase_service.dart';
 import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/data/product/source/product_firebase_service.dart';
+import 'package:ecommerce/data/storage/repository/storage.dart';
 import 'package:ecommerce/domain/auth/repository/auth.dart';
 import 'package:ecommerce/domain/auth/usecases/get_ages.dart';
 import 'package:ecommerce/domain/auth/usecases/get_role.dart';
@@ -34,11 +35,18 @@ import 'package:ecommerce/domain/product/usecases/get_products_by_title.dart';
 import 'package:ecommerce/domain/product/usecases/get_top_selling.dart';
 import 'package:ecommerce/domain/product/usecases/is_favorite.dart';
 import 'package:ecommerce/domain/product/usecases/update_product.dart';
+import 'package:ecommerce/domain/storage/repository/storage.dart';
+import 'package:ecommerce/domain/storage/usecase/upload_product_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
+  // External dependencies
+  sl.registerLazySingleton(() => FirebaseStorage.instance);
+  sl.registerLazySingleton(() => Uuid());
   //Services
 
   sl.registerSingleton<AuthFirebaseService>(
@@ -74,6 +82,14 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<OrderRepository>(
     OrderRepositoryImpl(),
   );
+
+  sl.registerSingleton<StorageRepository>(
+    StorageRepositoryImpl(
+      firebaseStorage: sl(),
+      uuid: sl(),
+    ),
+  );
+
   //UseCases
 
   sl.registerSingleton<SignupUseCase>(
@@ -170,5 +186,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<UpdateProductUseCase>(
     UpdateProductUseCase(),
+  );
+
+  sl.registerSingleton<UploadProductImageUseCase>(
+    UploadProductImageUseCase(sl<StorageRepository>()),
   );
 }
