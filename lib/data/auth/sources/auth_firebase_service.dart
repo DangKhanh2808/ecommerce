@@ -83,10 +83,25 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
     }
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user.email!,
         password: user.password!,
       );
+
+      // ✅ Lưu vào SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        await prefs.setString('uid', firebaseUser.uid);
+        await prefs.setString('email', firebaseUser.email ?? '');
+        await prefs.setString('displayName', firebaseUser.displayName ?? '');
+        await prefs.setString('photoURL', firebaseUser.photoURL ?? '');
+        await prefs.setString('role', 'user');
+        await prefs.setBool('isLoggedIn', true);
+      }
+
       return const Right('Đăng nhập thành công');
     } on FirebaseAuthException catch (e) {
       String errorMessage;
