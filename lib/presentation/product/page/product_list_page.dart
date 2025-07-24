@@ -1,14 +1,21 @@
 import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/common/widgets/product/product_tile.dart';
+import 'package:ecommerce/domain/product/repository/product.dart';
 import 'package:ecommerce/domain/product/usecases/update_product.dart';
-
 import 'package:ecommerce/presentation/product/bloc/deleteProduct/product_delete_cubit.dart';
 import 'package:ecommerce/presentation/product/bloc/deleteProduct/product_delete_state.dart';
 import 'package:ecommerce/presentation/product/bloc/updateProduct/update_product_cubit.dart';
 import 'package:ecommerce/presentation/product/page/edit_product_page.dart';
+import 'package:ecommerce/presentation/product/page/product_add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/common/bloc/product/product_display_state.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ecommerce/domain/category/repository/category.dart';
+import 'package:ecommerce/domain/storage/repository/storage.dart';
+import 'package:ecommerce/presentation/product/bloc/product_add_cubit.dart';
+import 'package:ecommerce/presentation/product/bloc/category/category_cubit.dart';
+import 'package:ecommerce/presentation/product/bloc/image/image_cubit.dart';
 
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
@@ -20,7 +27,44 @@ class ProductListPage extends StatelessWidget {
       child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Product List')),
+            appBar: AppBar(
+              title: const Text('Product List'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final productRepo = GetIt.I<ProductRepository>();
+                    final categoryRepo = GetIt.I<CategoryRepository>();
+                    final storageRepo = GetIt.I<StorageRepository>();
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (_) => ProductAddCubit(productRepo),
+                            ),
+                            BlocProvider(
+                              create: (_) => CategoryCubit(categoryRepo)
+                                ..fetchCategories(),
+                            ),
+                            BlocProvider(
+                              create: (_) => ImagePickerCubit(storageRepo),
+                            ),
+                          ],
+                          child: const ProductAddPage(),
+                        ),
+                      ),
+                    ).then((result) {
+                      if (result == true) {
+                        context.read<ProductsDisplayCubit>().displayProducts();
+                      }
+                    });
+                  },
+                )
+              ],
+            ),
             body: MultiBlocListener(
               listeners: [
                 BlocListener<ProductDeleteCubit, ProductDeleteState>(
@@ -76,7 +120,7 @@ class ProductListPage extends StatelessWidget {
                               if (result == true) {
                                 context
                                     .read<ProductsDisplayCubit>()
-                                    .displayProducts(); // làm mới danh sách nếu update xong
+                                    .displayProducts();
                               }
                             });
                           },

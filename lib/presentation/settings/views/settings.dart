@@ -5,7 +5,6 @@ import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
 import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/presentation/auth/user/views/signin.dart';
-import 'package:ecommerce/presentation/settings/widgets/add_product_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_favorite_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_order_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/signout.dart';
@@ -55,10 +54,6 @@ class SettingsPage extends StatelessWidget {
                   height: 15,
                 ),
                 const MyOrdersTile(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const AddProductTile(),
                 const SizedBox(
                   height: 15,
                 ),

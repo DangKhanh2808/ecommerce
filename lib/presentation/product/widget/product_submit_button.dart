@@ -32,9 +32,12 @@ class ProductSubmitButton extends StatelessWidget {
         }
 
         return ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (formKey.currentState!.validate()) {
+              await imagePickerCubit.uploadImagesToFirebase();
+
               final imageUrls = imagePickerCubit.state.imageUrls;
+
               final product = ProductEntity(
                 productId: '',
                 title: titleController.text,
@@ -52,6 +55,7 @@ class ProductSubmitButton extends StatelessWidget {
                   ProductColorEntity(title: 'Grey', rgb: [204, 204, 204]),
                 ],
               );
+
               context.read<ProductAddCubit>().createProduct(product);
             }
           },

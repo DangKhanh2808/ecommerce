@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:ecommerce/domain/storage/repository/storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart'; // 👈 import mới
 import 'package:uuid/uuid.dart';
 
 class StorageRepositoryImpl implements StorageRepository {
@@ -16,10 +17,13 @@ class StorageRepositoryImpl implements StorageRepository {
   @override
   Future<String> uploadProductImage({required String filePath}) async {
     final file = File(filePath);
-    final fileName = '${_uuid.v4()}.jpg';
-    final ref = _firebaseStorage.ref().child('products/images/$fileName');
+    final originalFileName = basename(filePath);
+    final uniqueFileName =
+        '${DateTime.now().millisecondsSinceEpoch}_$originalFileName';
+
+    final ref = _firebaseStorage.ref().child('Products/Images/$uniqueFileName');
 
     await ref.putFile(file);
-    return await ref.getDownloadURL(); // ✅ Link dùng để lưu vào Firestore
+    return ref.name;
   }
 }
