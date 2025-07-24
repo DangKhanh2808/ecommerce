@@ -8,6 +8,8 @@ import 'package:ecommerce/domain/order/usecases/order_registration.dart';
 import 'package:ecommerce/presentation/cart/views/order_placed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../../common/bloc/button/button_state.dart';
 import '../../../common/widgets/appbar/app_bar.dart';
 
@@ -42,43 +44,63 @@ class CheckOutPage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Builder(builder: (context) {
               return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _addressField(context),
-                  BasicReactiveButton(
-                      content: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '\$${CartHelper.calculateCartSubtotal(products)}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            const Text(
-                              'Place Order',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16),
-                            )
-                          ],
-                        ),
+                  _addressField(),
+                  const SizedBox(height: 20),
+                  // Nút thanh toán PayPal
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.payment),
+                      label: const Text("Thanh toán bằng PayPal"),
+                      onPressed: () => _payWithPaypal(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onPressed: () {
-                        context.read<ButtonStateCubit>().execute(
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Nút đặt hàng nội bộ
+                  BasicReactiveButton(
+                    content: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '\$${CartHelper.calculateCartSubtotal(products)}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const Text(
+                            'Place Order',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<ButtonStateCubit>().execute(
                             usecase: OrderRegistrationUseCase(),
                             params: OrderRegistrationReq(
-                                products: products,
-                                createdDate: DateTime.now().toString(),
-                                itemCount: products.length,
-                                totalPrice:
-                                    CartHelper.calculateCartSubtotal(products),
-                                shippingAddress: _addressCon.text));
-                      })
+                              products: products,
+                              createdDate: DateTime.now().toString(),
+                              itemCount: products.length,
+                              totalPrice:
+                                  CartHelper.calculateCartSubtotal(products),
+                              shippingAddress: _addressCon.text,
+                            ),
+                          );
+                    },
+                  ),
                 ],
               );
             }),
@@ -88,12 +110,34 @@ class CheckOutPage extends StatelessWidget {
     );
   }
 
-  Widget _addressField(BuildContext context) {
+  Widget _addressField() {
     return TextField(
       controller: _addressCon,
       minLines: 2,
       maxLines: 4,
-      decoration: const InputDecoration(hintText: 'Shipping Address'),
+      decoration: const InputDecoration(
+        hintText: 'Shipping Address',
+        border: OutlineInputBorder(),
+      ),
     );
+  }
+
+  void _payWithPaypal(BuildContext context) async {
+    final total = CartHelper.calculateCartSubtotal(products);
+    final url = Uri.parse(
+      'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick'
+      '&business=your-paypal-business@example.com'
+      '&currency_code=USD'
+      '&amount=$total'
+      '&item_name=Order%20on%20LINECOFFEE',
+    );
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Không thể mở PayPal')),
+      );
+    }
   }
 }
