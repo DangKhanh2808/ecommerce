@@ -1,8 +1,13 @@
-// profile.dart
+import 'package:ecommerce/core/configs/theme/bloc/theme_cubit.dart';
+import 'package:ecommerce/presentation/auth/user/views/signin.dart';
+import 'package:ecommerce/presentation/settings/views/my_favorites.dart';
+import 'package:ecommerce/presentation/settings/views/my_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/presentation/home/user/bloc/profile_cubit.dart';
 import 'package:ecommerce/presentation/home/user/bloc/profile_state.dart';
+import 'package:ecommerce/service_locator.dart';
+import 'package:ecommerce/domain/auth/usecases/signout.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -13,7 +18,10 @@ class ProfilePage extends StatelessWidget {
       create: (_) =>
           ProfileCubit(authRepository: context.read())..loadProfile(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Profile')),
+        appBar: AppBar(
+          title: const Text('Account'),
+          centerTitle: true,
+        ),
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
@@ -23,47 +31,101 @@ class ProfilePage extends StatelessWidget {
             } else if (state is ProfileLoaded) {
               final user = state.user;
 
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        user.image.isNotEmpty
-                            ? user.image
-                            : 'https://via.placeholder.com/150',
+              return Column(
+                children: [
+                  // Header
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 119, 188, 199),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                        bottomLeft: Radius.circular(24),
+                        bottomRight: Radius.circular(24),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Card(
-                      elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Name: ${user.firstName} ${user.lastName}',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text('Email: ${user.email}',
-                                style: const TextStyle(fontSize: 16)),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Gender: ${user.gender == 1 ? 'Male' : 'Female'}',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ],
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(
+                            user.image.isNotEmpty
+                                ? user.image
+                                : 'https://static.vecteezy.com/system/resources/previews/027/247/050/original/persian-cat-isolated-on-transparent-background-ai-generated-png.png',
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '${user.firstName} ${user.lastName}',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          user.email,
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Options
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.favorite),
+                          title: const Text('My Favorites'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const MyFavoritesPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.shopping_bag),
+                          title: const Text('My Orders'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const MyOrdersPage()),
+                            );
+                          },
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.brightness_6),
+                          title: const Text('Theme (Dark / Light)'),
+                          onTap: () {
+                            context.read<ThemeCubit>().toggleTheme();
+                          },
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.logout, color: Colors.red),
+                          title: const Text('Logout',
+                              style: TextStyle(color: Colors.red)),
+                          onTap: () async {
+                            await sl<SignoutUseCase>().call();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (_) => SigninPage()),
+                              (route) => false,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               );
             }
 

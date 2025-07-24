@@ -65,7 +65,7 @@ class Header extends StatelessWidget {
                   : NetworkImage(
                       user.image,
                     )),
-          color: Colors.red,
+          color: Colors.grey,
           shape: BoxShape.circle,
         ),
       ),
@@ -79,7 +79,7 @@ class Header extends StatelessWidget {
         horizontal: 16,
       ),
       decoration: BoxDecoration(
-        color: AppColors.secondBackground,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(

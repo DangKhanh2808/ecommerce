@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     const HomeContent(),
     const CartPage(),
     const MyFavoritesPage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

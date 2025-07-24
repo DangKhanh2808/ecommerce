@@ -23,19 +23,18 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: 180,
         decoration: BoxDecoration(
-            color: AppColors.secondBackground,
-            borderRadius: BorderRadius.circular(8)),
+            color: AppColors.primary, borderRadius: BorderRadius.circular(8)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Image section
             Expanded(
               flex: 4,
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
                     image: DecorationImage(
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                         image: NetworkImage(
                             ImageDisplayHelper.generateProductImageURL(
                                 productEntity.images[0]))),
@@ -44,14 +43,12 @@ class ProductCard extends StatelessWidget {
                         topRight: Radius.circular(8))),
               ),
             ),
-            // Product details section
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       productEntity.title,
@@ -74,15 +71,16 @@ class ProductCard extends StatelessWidget {
                         const SizedBox(
                           width: 10,
                         ),
-                        if (productEntity.discountedPrice != 0)
-                          Text(
-                            "${productEntity.price}\$",
-                            style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w300,
-                                decoration: TextDecoration.lineThrough),
-                          ),
+                        Text(
+                          productEntity.discountedPrice == 0
+                              ? ''
+                              : "${productEntity.price}\$",
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.lineThrough),
+                        ),
                       ],
                     )
                   ],
