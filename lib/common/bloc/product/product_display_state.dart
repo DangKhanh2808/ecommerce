@@ -11,4 +11,8 @@ class ProductsLoaded extends ProductsDisplayState {
   ProductsLoaded({required this.products});
 }
 
-class LoadProductsFailure extends ProductsDisplayState {}
+class LoadProductsFailure extends ProductsDisplayState {
+  final String message;
+
+  LoadProductsFailure(this.message);
+}

@@ -1,7 +1,10 @@
 import 'package:ecommerce/common/bloc/categories/categories_display_cubit.dart';
+import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/common/helper/app_images/image_display.dart';
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
+import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/presentation/all_categories/views/all_categories.dart';
+import 'package:ecommerce/presentation/home/widgets/all_product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +16,16 @@ class Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CategoriesDisplayCubit()..displayCategories(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CategoriesDisplayCubit()..displayCategories(),
+        ),
+        BlocProvider(
+          create: (context) => ProductsDisplayCubit(useCase: GetNewInUseCase())
+            ..displayProducts(),
+        ),
+      ],
       child: BlocBuilder<CategoriesDisplayCubit, CategoriesDisplayState>(
         builder: (context, state) {
           if (state is CategoriesLoading) {
@@ -51,7 +62,13 @@ class Categories extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              AppNavigator.push(context, const AllCategoriesPage());
+              AppNavigator.push(
+                context,
+                BlocProvider.value(
+                  value: context.read<ProductsDisplayCubit>(),
+                  child: const AllProductsPage(),
+                ),
+              );
             },
             child: const Text(
               'See All',

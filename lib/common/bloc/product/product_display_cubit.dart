@@ -10,7 +10,7 @@ class ProductsDisplayCubit extends Cubit<ProductsDisplayState> {
     emit(ProductsLoading());
     var returnedData = await useCase.call(params: params);
     returnedData.fold((error) {
-      emit(LoadProductsFailure());
+      emit(LoadProductsFailure(error));
     }, (data) {
       emit(ProductsLoaded(products: data));
     });
