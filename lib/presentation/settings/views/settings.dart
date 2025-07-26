@@ -3,6 +3,8 @@ import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
+import 'package:ecommerce/common/widgets/responsive_container.dart';
+import 'package:ecommerce/common/widgets/theme_switch.dart';
 import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/presentation/auth/user/views/signin.dart';
 import 'package:ecommerce/presentation/settings/widgets/my_favorite_tile.dart';
@@ -17,6 +19,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: const BasicAppbar(
         title: Text('Settings'),
@@ -46,18 +50,31 @@ class SettingsPage extends StatelessWidget {
               AppNavigator.pushAndRemove(context, SigninPage());
             }
           },
-          child: Padding(
+          child: ResponsiveContainer(
             padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  'Preferences',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const ThemeSwitch(),
+                const SizedBox(height: 32),
+                Text(
+                  'Account',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
                 const MyFavortiesTile(),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 12),
                 const MyOrdersTile(),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 12),
                 SignOutButton(),
               ],
             ),

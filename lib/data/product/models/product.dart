@@ -32,7 +32,7 @@ class ProductModel {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       categoryId: map['categoryId'] ?? '',
-      colors: (map['colors'] as List<dynamic>? ?? [68, 104, 229])
+      colors: (map['colors'] as List<dynamic>? ?? [])
           .map((e) => ProductColorModel.fromMap(e))
           .toList(),
       createdDate: map['createdDate'] ?? Timestamp.now(),

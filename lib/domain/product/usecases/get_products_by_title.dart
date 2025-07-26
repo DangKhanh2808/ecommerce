@@ -9,6 +9,6 @@ class GetProductsByTitleUseCase implements UseCase<Either, String> {
 
   @override
   Future<Either> call({String? params}) async {
-    return await repository.getProductsByTitle(params!);
+    return await repository.getProductsByTitle(params ?? '');
   }
 }

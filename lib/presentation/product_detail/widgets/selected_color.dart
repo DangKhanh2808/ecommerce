@@ -1,8 +1,6 @@
-import 'package:ecommerce/common/helper/bottomsheet/app_bottomsheet.dart';
-import 'package:ecommerce/core/configs/theme/app_colors.dart';
 import 'package:ecommerce/domain/product/entity/product.dart';
+import 'package:ecommerce/domain/product/entity/color.dart';
 import 'package:ecommerce/presentation/product_detail/bloc/product_color_selection_cubit.dart';
-import 'package:ecommerce/presentation/product_detail/widgets/product_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,60 +8,91 @@ class SelectedColor extends StatelessWidget {
   final ProductEntity productEntity;
   const SelectedColor({required this.productEntity, super.key});
 
+  // Danh sách 5 màu cơ bản
+  List<Map<String, dynamic>> get defaultColors => [
+    {'title': 'Black', 'rgb': [0, 0, 0]},
+    {'title': 'White', 'rgb': [255, 255, 255]},
+    {'title': 'Red', 'rgb': [255, 0, 0]},
+    {'title': 'Blue', 'rgb': [0, 0, 255]},
+    {'title': 'Green', 'rgb': [0, 128, 0]},
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AppBottomsheet.display(
-            context,
-            BlocProvider.value(
-                value: BlocProvider.of<ProductColorSelectionCubit>(context),
-                child: ProductColors(
-                  productEntity: productEntity,
-                )));
-      },
-      child: Container(
-        height: 60,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.secondBackground,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Color',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-            Row(
-              children: [
-                BlocBuilder<ProductColorSelectionCubit, int>(
-                  builder: (context, state) => Container(
-                    height: 20,
-                    width: 20,
+    // Luôn sử dụng màu mặc định để đảm bảo người dùng thấy được tất cả màu
+    final colorsToShow = defaultColors.map((color) => ProductColorEntity(
+        title: color['title'] as String, 
+        rgb: List<int>.from(color['rgb'] as List)
+      )).toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Color',
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          BlocBuilder<ProductColorSelectionCubit, int>(
+            builder: (context, selectedIndex) => Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: List.generate(
+                colorsToShow.length,
+                (index) => GestureDetector(
+                  onTap: () {
+                    context.read<ProductColorSelectionCubit>().itemSelection(index);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(
-                          productEntity.colors[state].rgb[0],
-                          productEntity.colors[state].rgb[1],
-                          productEntity.colors[state].rgb[2],
-                          1),
-                      shape: BoxShape.circle,
+                      color: selectedIndex == index 
+                          ? Theme.of(context).primaryColor 
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: selectedIndex == index 
+                            ? Theme.of(context).primaryColor 
+                            : Colors.grey.shade300,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(
+                                colorsToShow[index].rgb[0],
+                                colorsToShow[index].rgb[1],
+                                colorsToShow[index].rgb[2],
+                                1),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          colorsToShow[index].title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: selectedIndex == index 
+                                ? Colors.white 
+                                : null,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(
-                  width: 15,
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 30,
-                )
-              ],
-            )
-          ],
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

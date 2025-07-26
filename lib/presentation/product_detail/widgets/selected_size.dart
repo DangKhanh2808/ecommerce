@@ -1,10 +1,6 @@
-import 'package:ecommerce/core/configs/theme/app_colors.dart';
 import 'package:ecommerce/domain/product/entity/product.dart';
-import 'package:ecommerce/presentation/product_detail/widgets/product_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../common/helper/bottomsheet/app_bottomsheet.dart';
 import '../bloc/product_size_selection_cubit.dart';
 
 class SelectedSize extends StatelessWidget {
@@ -13,51 +9,56 @@ class SelectedSize extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        AppBottomsheet.display(
-            context,
-            BlocProvider.value(
-                value: BlocProvider.of<ProductSizeSelectionCubit>(context),
-                child: ProductSizes(
-                  productEntity: productEntity,
-                )));
-      },
-      child: Container(
-        height: 60,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.secondBackground,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Size',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-            Row(
-              children: [
-                BlocBuilder<ProductSizeSelectionCubit, int>(
-                  builder: (context, state) => Text(
-                    productEntity.sizes[state],
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Size',
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          BlocBuilder<ProductSizeSelectionCubit, int>(
+            builder: (context, selectedIndex) => Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: List.generate(
+                productEntity.sizes.length,
+                (index) => GestureDetector(
+                  onTap: () {
+                    context.read<ProductSizeSelectionCubit>().itemSelection(index);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: selectedIndex == index 
+                          ? Theme.of(context).primaryColor 
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: selectedIndex == index 
+                            ? Theme.of(context).primaryColor 
+                            : Colors.grey.shade300,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      productEntity.sizes[index],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: selectedIndex == index 
+                            ? Colors.white 
+                            : null,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  width: 15,
-                ),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 30,
-                )
-              ],
-            )
-          ],
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

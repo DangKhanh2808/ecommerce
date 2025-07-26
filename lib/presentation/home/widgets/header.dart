@@ -16,27 +16,69 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return BlocProvider(
       create: (context) => UserInforDisplayCubit()..displayUserInfor(),
-      child: Padding(
+      child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.only(
           top: 40,
           right: 16,
           left: 16,
+          bottom: 16,
+        ),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.gradientStart, AppColors.gradientEnd],
+          ),
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
         ),
         child: BlocBuilder<UserInforDisplayCubit, UserInforDisplayState>(
           builder: (context, state) {
             if (state is UserInforLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              );
             }
 
             if (state is UserInforLoaded) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _profileImage(state.user, context),
-                  _gender(state.user),
-                  _card(context),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _profileImage(state.user, context),
+                      _gender(state.user),
+                      _card(context),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Welcome back,',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white70,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    state.user.firstName.isNotEmpty 
+                        ? state.user.firstName 
+                        : 'User',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               );
             }
@@ -54,19 +96,28 @@ class Header extends StatelessWidget {
         AppNavigator.push(context, SettingsPage());
       },
       child: Container(
-        height: 40,
-        width: 40,
+        height: 48,
+        width: 48,
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: user.image.isEmpty
-                  ? AssetImage(
-                      AppImages.profile,
-                    )
-                  : NetworkImage(
-                      user.image,
-                    )),
-          color: Colors.grey,
+            image: user.image.isNotEmpty
+                ? NetworkImage(user.image) as ImageProvider
+                : const AssetImage(AppImages.profile),
+            fit: BoxFit.cover,
+          ),
+          color: Colors.grey[300],
           shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.white,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
       ),
     );
@@ -75,18 +126,23 @@ class Header extends StatelessWidget {
   Widget _gender(UserEntity user) {
     return Container(
       height: 40,
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(100),
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.3),
+          width: 1,
+        ),
       ),
-      child: Text(
-        user.gender == 1 ? 'Men' : 'Women',
-        style: const TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
+      child: Center(
+        child: Text(
+          user.gender == 1 ? 'Men' : 'Women',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -98,15 +154,26 @@ class Header extends StatelessWidget {
         AppNavigator.push(context, const CartPage());
       },
       child: Container(
-        height: 40,
-        width: 40,
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
+        height: 48,
+        width: 48,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
           shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.white.withOpacity(0.3),
+            width: 1,
+          ),
         ),
-        child: SvgPicture.asset(
-          AppVectors.bag,
-          fit: BoxFit.none,
+        child: Center(
+          child: SvgPicture.asset(
+            AppVectors.bag,
+            height: 20,
+            width: 20,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
+          ),
         ),
       ),
     );

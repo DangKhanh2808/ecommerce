@@ -12,6 +12,8 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return GestureDetector(
       onTap: () {
         AppNavigator.push(
@@ -20,101 +22,130 @@ class ProductCard extends StatelessWidget {
               productEntity: productEntity,
             ));
       },
-      child: Container(
-        width: 160,
-        decoration: BoxDecoration(
-            color: AppColors.primary, 
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 3,
-                offset: const Offset(0, 2),
-              ),
-            ]),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image section
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            ImageDisplayHelper.generateProductImageURL(
-                                productEntity.images[0]))),
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8))),
-              ),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          width: 180,
+          height: 260, // Đặt chiều cao cố định
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppColors.gradientStart, AppColors.gradientEnd],
             ),
-            // Content section
-            Expanded(
-              flex: 1,
-              child: Container(
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image section
+              SizedBox(
+                height: 130,
                 width: double.infinity,
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Stack(
                   children: [
-                    // Product title
-                    Flexible(
-                      child: Text(
-                        productEntity.title,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    // Price section
-                    Row(
-                      children: [
-                        // Current price
-                        Flexible(
-                          child: Text(
-                            productEntity.discountedPrice == 0
-                                ? "${productEntity.price}\$"
-                                : "${productEntity.discountedPrice}\$",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                    Container(
+                      width: double.infinity,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            ImageDisplayHelper.generateProductImageURL(
+                              productEntity.images[0],
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        // Original price (if discounted)
-                        if (productEntity.discountedPrice != 0) ...[
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              "${productEntity.price}\$",
-                              style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w300,
-                                  decoration: TextDecoration.lineThrough),
-                              overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    // Discount badge
+                    if (productEntity.discountedPrice != 0)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${(((productEntity.price - productEntity.discountedPrice) / productEntity.price) * 100).round()}% OFF',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ],
-                    ),
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ),
-          ],
+              // Content section
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        productEntity.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            productEntity.discountedPrice == 0
+                                ? "\$${productEntity.price}"
+                                : "\$${productEntity.discountedPrice}",
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (productEntity.discountedPrice != 0) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              "\$${productEntity.price}",
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
