@@ -7,6 +7,7 @@ import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../service_locator.dart';
+import 'package:ecommerce/core/constants/app_strings.dart';
 
 class NewIn extends StatelessWidget {
   const NewIn({super.key});

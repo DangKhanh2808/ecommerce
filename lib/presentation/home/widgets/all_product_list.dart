@@ -48,7 +48,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('Giá:'),
+                    Text('Price:'),
                     DropdownButton<double>(
                       value: _selectedMinPrice,
                       items: List.generate(10, (i) => i * 100)
@@ -63,7 +63,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
                         });
                       },
                     ),
-                    const Text('đến'),
+                    const Text('to'),
                     DropdownButton<double>(
                       value: _selectedMaxPrice,
                       items: List.generate(10, (i) => (i + 1) * 100)
@@ -99,7 +99,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
               }).toList();
 
               if (products.isEmpty) {
-                return const Center(child: Text('No products.'));
+                return const Center(child: Text('No products found.'));
               }
 
               return GridView.builder(
@@ -119,7 +119,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
                 },
               );
             } else if (state is LoadProductsFailure) {
-              return Center(child: Text('Lỗi:  7Bstate.message}'));
+              return Center(child: Text('Error: ${state.message}'));
             }
 
             return const SizedBox.shrink();

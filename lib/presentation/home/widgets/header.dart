@@ -10,6 +10,7 @@ import 'package:ecommerce/presentation/settings/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ecommerce/core/constants/app_strings.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
@@ -63,7 +64,7 @@ class Header extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Welcome back,',
+                    AppStrings.welcomeBack,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: Colors.white70,
                       fontSize: 16,
@@ -73,7 +74,7 @@ class Header extends StatelessWidget {
                   Text(
                     state.user.firstName.isNotEmpty 
                         ? state.user.firstName 
-                        : 'User',
+                        : AppStrings.user,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -137,7 +138,7 @@ class Header extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          user.gender == 1 ? 'Men' : 'Women',
+          user.gender == 1 ? AppStrings.men : AppStrings.women,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w600,

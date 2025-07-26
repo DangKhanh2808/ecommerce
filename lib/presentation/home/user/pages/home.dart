@@ -11,6 +11,7 @@ import 'package:ecommerce/presentation/home/widgets/top_selling.dart';
 import 'package:ecommerce/presentation/home/widgets/all_product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/presentation/settings/views/my_favorites.dart';
+import 'package:ecommerce/core/constants/app_strings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        showProduct: true, // Truyền cờ để hiện tab Product
+        showProduct: true, // Pass flag to show Product tab
       ),
     );
   }
@@ -71,7 +72,7 @@ class HomeContent extends StatelessWidget {
                 const SearchField(),
                 const SizedBox(height: 24),
                 Text(
-                  'Categories',
+                  AppStrings.categories,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

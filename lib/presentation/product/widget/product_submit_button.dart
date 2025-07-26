@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/domain/product/entity/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../common/helper/product/default_colors.dart';
 
 class ProductSubmitButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -49,11 +50,7 @@ class ProductSubmitButton extends StatelessWidget {
                 images: imageUrls,
                 sizes: ['35', '37', '40', '42'],
                 salesNumber: 0,
-                colors: [
-                  ProductColorEntity(title: 'Black', rgb: [0, 0, 0]),
-                  ProductColorEntity(title: 'White', rgb: [255, 255, 255]),
-                  ProductColorEntity(title: 'Grey', rgb: [204, 204, 204]),
-                ],
+                colors: DefaultColors.colorEntities,
               );
 
               context.read<ProductAddCubit>().createProduct(product);

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/widgets/product/product_card.dart';
 import '../../../service_locator.dart';
+import 'package:ecommerce/core/constants/app_strings.dart';
 
 class TopSelling extends StatelessWidget {
   const TopSelling({super.key});
@@ -41,13 +42,13 @@ class TopSelling extends StatelessWidget {
   }
 
   Widget _topSelling() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: 16,
       ),
       child: Text(
-        'Top Selling',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        AppStrings.topSelling,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
     );
   }

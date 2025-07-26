@@ -3,27 +3,16 @@ import 'package:ecommerce/domain/product/entity/color.dart';
 import 'package:ecommerce/presentation/product_detail/bloc/product_color_selection_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../common/helper/product/default_colors.dart';
 
 class SelectedColor extends StatelessWidget {
   final ProductEntity productEntity;
   const SelectedColor({required this.productEntity, super.key});
 
-  // Danh sách 5 màu cơ bản
-  List<Map<String, dynamic>> get defaultColors => [
-    {'title': 'Black', 'rgb': [0, 0, 0]},
-    {'title': 'White', 'rgb': [255, 255, 255]},
-    {'title': 'Red', 'rgb': [255, 0, 0]},
-    {'title': 'Blue', 'rgb': [0, 0, 255]},
-    {'title': 'Green', 'rgb': [0, 128, 0]},
-  ];
-
   @override
   Widget build(BuildContext context) {
-    // Luôn sử dụng màu mặc định để đảm bảo người dùng thấy được tất cả màu
-    final colorsToShow = defaultColors.map((color) => ProductColorEntity(
-        title: color['title'] as String, 
-        rgb: List<int>.from(color['rgb'] as List)
-      )).toList();
+    // Always use default colors to ensure users see all colors
+    final colorsToShow = DefaultColors.colorEntities;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
