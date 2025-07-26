@@ -24,4 +24,20 @@ class ProductOrderedEntity {
     required this.id,
     required this.code,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'productId': productId,
+      'productTitle': productTitle,
+      'productQuantity': productQuantity,
+      'productColor': productColor,
+      'productSize': productSize,
+      'productPrice': productPrice,
+      'totalPrice': totalPrice,
+      'productImage': productImage,
+      'createdDate': createdDate,
+      'id': id,
+      'code': code,
+    };
+  }
 }

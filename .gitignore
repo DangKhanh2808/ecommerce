@@ -48,3 +48,14 @@ app.*.map.json
 /.json_models/
 models.jsonc
 .env
+
+# Node.js related
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PayPal server environment files
+paypal_server/.env
+paypal_server/node_modules/
