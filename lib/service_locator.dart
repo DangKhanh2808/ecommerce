@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/data/auth/repository/auth_respository_imple.dart';
 import 'package:ecommerce/data/auth/sources/auth_firebase_service.dart';
 import 'package:ecommerce/data/category/repository/category.dart';
@@ -5,7 +6,9 @@ import 'package:ecommerce/data/category/sources/category_firebase_service.dart';
 import 'package:ecommerce/data/order/repository/order.dart';
 import 'package:ecommerce/data/order/source/order_firebase_service.dart';
 import 'package:ecommerce/data/product/repository/product.dart';
+import 'package:ecommerce/data/product/repository/review.dart';
 import 'package:ecommerce/data/product/source/product_firebase_service.dart';
+import 'package:ecommerce/data/product/source/review_firebase_service.dart';
 import 'package:ecommerce/data/storage/repository/storage.dart';
 import 'package:ecommerce/domain/auth/repository/auth.dart';
 import 'package:ecommerce/domain/auth/usecases/get_ages.dart';
@@ -25,6 +28,7 @@ import 'package:ecommerce/domain/order/usecases/get_orders.dart';
 import 'package:ecommerce/domain/order/usecases/order_registration.dart';
 import 'package:ecommerce/domain/order/usecases/remove_cart_products.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
+import 'package:ecommerce/domain/product/repository/review.dart';
 import 'package:ecommerce/domain/product/usecases/add_or_remove_favorite_product.dart';
 import 'package:ecommerce/domain/product/usecases/add_product.dart';
 import 'package:ecommerce/domain/product/usecases/delete_product.dart';
@@ -32,8 +36,10 @@ import 'package:ecommerce/domain/product/usecases/get_favorites_products.dart';
 import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
 import 'package:ecommerce/domain/product/usecases/get_products_by_category_id.dart';
 import 'package:ecommerce/domain/product/usecases/get_products_by_title.dart';
+import 'package:ecommerce/domain/product/usecases/get_review.dart';
 import 'package:ecommerce/domain/product/usecases/get_top_selling.dart';
 import 'package:ecommerce/domain/product/usecases/is_favorite.dart';
+import 'package:ecommerce/domain/product/usecases/submit_review.dart';
 import 'package:ecommerce/domain/product/usecases/update_product.dart';
 import 'package:ecommerce/domain/storage/repository/storage.dart';
 import 'package:ecommerce/domain/storage/usecase/upload_product_image.dart';
@@ -47,6 +53,8 @@ Future<void> initializeDependencies() async {
   // External dependencies
   sl.registerLazySingleton(() => FirebaseStorage.instance);
   sl.registerLazySingleton(() => Uuid());
+  sl.registerLazySingleton(() => FirebaseFirestore.instance);
+
   //Services
 
   sl.registerSingleton<AuthFirebaseService>(
@@ -63,6 +71,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<OrderFirebaseService>(
     OrderFirebaseServiceImpl(),
+  );
+
+  sl.registerSingleton<ReviewFirebaseService>(
+    ReviewFirebaseServiceImpl(firestore: sl()),
   );
 
   //Repositories
@@ -90,6 +102,9 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  sl.registerSingleton<ReviewRepository>(
+    ReviewRepositoryImpl(sl<ReviewFirebaseService>()),
+  );
   //UseCases
 
   sl.registerSingleton<SignupUseCase>(
@@ -190,5 +205,13 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<UploadProductImageUseCase>(
     UploadProductImageUseCase(sl<StorageRepository>()),
+  );
+
+  sl.registerSingleton<SubmitReviewUseCase>(
+    SubmitReviewUseCase(sl<ReviewRepository>()),
+  );
+
+  sl.registerSingleton<GetReviewsUseCase>(
+    GetReviewsUseCase(sl<ReviewRepository>()),
   );
 }
