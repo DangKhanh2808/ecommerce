@@ -108,99 +108,99 @@ Future<void> initializeDependencies() async {
   //UseCases
 
   sl.registerSingleton<SignupUseCase>(
-    SignupUseCase(),
+    SignupUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<GetAgesUseCase>(
-    GetAgesUseCase(),
+    GetAgesUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<SigninUseCase>(
-    SigninUseCase(),
+    SigninUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<SendPasswordResetEmailUseCase>(
-    SendPasswordResetEmailUseCase(),
+    SendPasswordResetEmailUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<IsLoggedInUseCase>(
-    IsLoggedInUseCase(),
+    IsLoggedInUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<GetUserUseCase>(
-    GetUserUseCase(),
+    GetUserUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<GetCategoriesUseCase>(
-    GetCategoriesUseCase(),
+    GetCategoriesUseCase(sl<CategoryRepository>()),
   );
 
   sl.registerSingleton<GetTopSellingUseCase>(
-    GetTopSellingUseCase(),
+    GetTopSellingUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<GetNewInUseCase>(
-    GetNewInUseCase(),
+    GetNewInUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<GetProductsByCategoryIdUseCase>(
-    GetProductsByCategoryIdUseCase(),
+    GetProductsByCategoryIdUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<GetProductsByTitleUseCase>(
-    GetProductsByTitleUseCase(),
+    GetProductsByTitleUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<AddToCartUseCase>(
-    AddToCartUseCase(),
+    AddToCartUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<GetCartProductsUseCase>(
-    GetCartProductsUseCase(),
+    GetCartProductsUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<RemoveCartProductsUseCase>(
-    RemoveCartProductsUseCase(),
+    RemoveCartProductsUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<OrderRegistrationUseCase>(
-    OrderRegistrationUseCase(),
+    OrderRegistrationUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<AddOrRemoveFavoriteProductUseCase>(
-    AddOrRemoveFavoriteProductUseCase(),
+    AddOrRemoveFavoriteProductUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<IsFavoriteUseCase>(
-    IsFavoriteUseCase(),
+    IsFavoriteUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<GetFavoritesProductsUseCase>(
-    GetFavoritesProductsUseCase(),
+    GetFavoritesProductsUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<GetOrdersUseCase>(
-    GetOrdersUseCase(),
+    GetOrdersUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<SignoutUseCase>(
-    SignoutUseCase(),
+    SignoutUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<GetRoleUseCase>(
-    GetRoleUseCase(),
+    GetRoleUseCase(sl<AuthRepository>()),
   );
 
   sl.registerSingleton<AddProductUseCase>(
-    AddProductUseCase(),
+    AddProductUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<DeleteProductUseCase>(
-    DeleteProductUseCase(),
+    DeleteProductUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<UpdateProductUseCase>(
-    UpdateProductUseCase(),
+    UpdateProductUseCase(sl<ProductRepository>()),
   );
 
   sl.registerSingleton<UploadProductImageUseCase>(

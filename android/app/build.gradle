@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ecommerce"
+    namespace 'com.example.ecommerce'
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

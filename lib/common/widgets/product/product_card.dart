@@ -21,20 +21,30 @@ class ProductCard extends StatelessWidget {
             ));
       },
       child: Container(
-        width: 180,
+        width: 160,
         decoration: BoxDecoration(
-            color: AppColors.primary, borderRadius: BorderRadius.circular(8)),
+            color: AppColors.primary, 
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 3,
+                offset: const Offset(0, 2),
+              ),
+            ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Image section
             Expanded(
-              flex: 4,
+              flex: 3,
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     image: DecorationImage(
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         image: NetworkImage(
                             ImageDisplayHelper.generateProductImageURL(
                                 productEntity.images[0]))),
@@ -43,46 +53,63 @@ class ProductCard extends StatelessWidget {
                         topRight: Radius.circular(8))),
               ),
             ),
+            // Content section
             Expanded(
               flex: 1,
-              child: Padding(
+              child: Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                      productEntity.title,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w300),
+                    // Product title
+                    Flexible(
+                      child: Text(
+                        productEntity.title,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
+                    const SizedBox(height: 4),
+                    // Price section
                     Row(
                       children: [
-                        Text(
-                          productEntity.discountedPrice == 0
-                              ? "${productEntity.price}\$"
-                              : "${productEntity.discountedPrice}\$",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
+                        // Current price
+                        Flexible(
+                          child: Text(
+                            productEntity.discountedPrice == 0
+                                ? "${productEntity.price}\$"
+                                : "${productEntity.discountedPrice}\$",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          productEntity.discountedPrice == 0
-                              ? ''
-                              : "${productEntity.price}\$",
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w300,
-                              decoration: TextDecoration.lineThrough),
-                        ),
+                        // Original price (if discounted)
+                        if (productEntity.discountedPrice != 0) ...[
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              "${productEntity.price}\$",
+                              style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w300,
+                                  decoration: TextDecoration.lineThrough),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

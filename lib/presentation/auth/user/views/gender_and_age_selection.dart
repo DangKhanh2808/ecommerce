@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common/widgets/appbar/app_bar.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class GenderAndAgeSelectionPage extends StatelessWidget {
   final UserCreationReq userCreationReq;
@@ -169,9 +170,8 @@ class GenderAndAgeSelectionPage extends StatelessWidget {
                     context.read<GenderSelectionCubit>().selectedIndex;
                 userCreationReq.age =
                     context.read<AgeSelectionCubit>().selectedAge;
-                context
-                    .read<ButtonStateCubit>()
-                    .execute(usecase: SignupUseCase(), params: userCreationReq);
+                context.read<ButtonStateCubit>().execute(
+                  usecase: sl<SignupUseCase>(), params: userCreationReq);
               },
               title: 'Finish');
         }),

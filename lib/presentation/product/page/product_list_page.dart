@@ -16,6 +16,7 @@ import 'package:ecommerce/domain/storage/repository/storage.dart';
 import 'package:ecommerce/presentation/product/bloc/product_add_cubit.dart';
 import 'package:ecommerce/presentation/product/bloc/category/category_cubit.dart';
 import 'package:ecommerce/presentation/product/bloc/image/image_cubit.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
@@ -23,7 +24,7 @@ class ProductListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProductUpdateCubit(UpdateProductUseCase()),
+      create: (_) => ProductUpdateCubit(sl<UpdateProductUseCase>()),
       child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
         builder: (context, state) {
           return Scaffold(
@@ -65,77 +66,75 @@ class ProductListPage extends StatelessWidget {
                 )
               ],
             ),
-            body: MultiBlocListener(
-              listeners: [
-                BlocListener<ProductDeleteCubit, ProductDeleteState>(
-                  listener: (context, state) {
-                    if (state is ProductDeleteSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Delete successful')),
-                      );
-                      context.read<ProductsDisplayCubit>().displayProducts();
-                    } else if (state is ProductDeleteFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Delete error: ${state.message}')),
-                      );
-                    }
-                  },
-                ),
-              ],
-              child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
-                builder: (context, state) {
-                  if (state is ProductsLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ProductsLoaded) {
-                    final products = state.products;
-                    if (products.isEmpty) {
-                      return const Center(child: Text('No products found'));
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(12),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-
-                        return ProductTile(
-                          product: product,
-                          onDelete: () {
-                            context
-                                .read<ProductDeleteCubit>()
-                                .deleteProduct(product.productId);
-                          },
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (_) => ProductUpdateCubit(
-                                      UpdateProductUseCase()),
-                                  child: EditProductPage(product: product),
-                                ),
-                              ),
-                            ).then((result) {
-                              if (result == true) {
-                                context
-                                    .read<ProductsDisplayCubit>()
-                                    .displayProducts();
-                              }
-                            });
-                          },
-                        );
-                      },
-                    );
-                  } else if (state is LoadProductsFailure) {
-                    return const Center(child: Text('Error loading products'));
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ),
+            body: _buildBody(context, state),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, ProductsDisplayState state) {
+    if (state is ProductsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state is ProductsLoaded) {
+      return ListView.builder(
+        itemCount: state.products.length,
+        itemBuilder: (context, index) {
+          final product = state.products[index];
+          return ProductTile(
+            product: product,
+            onTap: () => _editProduct(context, product),
+            onDelete: () => _deleteProduct(context, product),
+          );
+        },
+      );
+    }
+
+    if (state is LoadProductsFailure) {
+      return Center(child: Text('Error: ${state.message}'));
+    }
+
+    return const Center(child: Text('No products found'));
+  }
+
+  void _editProduct(BuildContext context, dynamic product) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => ProductUpdateCubit(sl<UpdateProductUseCase>()),
+          child: EditProductPage(product: product),
+        ),
+      ),
+    ).then((result) {
+      if (result == true) {
+        context.read<ProductsDisplayCubit>().displayProducts();
+      }
+    });
+  }
+
+  void _deleteProduct(BuildContext context, dynamic product) {
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Product'),
+        content: Text('Are you sure you want to delete ${product.title}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Delete product logic here
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

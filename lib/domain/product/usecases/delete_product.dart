@@ -1,11 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/usecase/usecase.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
-import 'package:ecommerce/service_locator.dart';
 
-class DeleteProductUseCase implements UseCase<Either, dynamic> {
+class DeleteProductUseCase implements UseCase<Either, String> {
+  final ProductRepository repository;
+
+  DeleteProductUseCase(this.repository);
+
   @override
-  Future<Either> call({dynamic params}) async {
-    return await sl<ProductRepository>().deleteProduct(params);
+  Future<Either> call({String? params}) async {
+    return await repository.deleteProduct(params!);
   }
 }

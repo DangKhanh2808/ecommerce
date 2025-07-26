@@ -13,6 +13,7 @@ import 'package:ecommerce/presentation/product_detail/bloc/product_quantity_cubi
 import 'package:ecommerce/presentation/product_detail/bloc/product_size_selection_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class AddToBag extends StatelessWidget {
   final ProductEntity productEntity;
@@ -38,7 +39,7 @@ class AddToBag extends StatelessWidget {
         child: BasicReactiveButton(
             onPressed: () {
               context.read<ButtonStateCubit>().execute(
-                  usecase: AddToCartUseCase(),
+                  usecase: sl<AddToCartUseCase>(),
                   params: AddToCartReq(
                     productId: productEntity.productId,
                     productTitle: productEntity.title,

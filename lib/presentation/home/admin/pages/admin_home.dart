@@ -9,6 +9,7 @@ import 'package:ecommerce/presentation/product/bloc/deleteProduct/product_delete
 import 'package:ecommerce/presentation/product/page/product_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -25,7 +26,7 @@ class AdminHomePage extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ProductsDisplayCubit(
-              useCase: GetNewInUseCase(),
+              useCase: sl<GetNewInUseCase>(),
             )..displayProducts(),
           ),
         ],

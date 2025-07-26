@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common/bloc/button/button_state.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class EnterPasswordPage extends StatelessWidget {
   final UserSigninReq signinReq;
@@ -101,7 +102,7 @@ class EnterPasswordPage extends StatelessWidget {
 
             context
                 .read<ButtonStateCubit>()
-                .execute(usecase: SigninUseCase(), params: signinReq);
+                .execute(usecase: sl<SigninUseCase>(), params: signinReq);
           },
           title: 'Continue');
     });

@@ -10,6 +10,7 @@ import 'package:ecommerce/presentation/settings/widgets/my_order_tile.dart';
 import 'package:ecommerce/presentation/settings/widgets/signout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -27,7 +28,7 @@ class SettingsPage extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
-                ProductsDisplayCubit(useCase: GetNewInUseCase())
+                ProductsDisplayCubit(useCase: sl<GetNewInUseCase>())
                   ..displayProducts(),
           ),
         ],

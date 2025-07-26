@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/bloc/button/button_state.dart';
 import '../../../common/widgets/appbar/app_bar.dart';
 import 'dart:async';
-import 'package:uni_links/uni_links.dart';
+import 'package:app_links/app_links.dart';
 
 class CheckOutPage extends StatefulWidget {
   final List<ProductOrderedEntity> products;
@@ -27,12 +27,13 @@ class CheckOutPage extends StatefulWidget {
 class _CheckOutPageState extends State<CheckOutPage> {
   final TextEditingController _addressCon = TextEditingController();
   StreamSubscription? _linkSub;
+  final _appLinks = AppLinks();
 
   @override
   void initState() {
     super.initState();
-    _linkSub = linkStream.listen((String? link) {
-      if (link != null && link.contains('payment-success')) {
+    _linkSub = _appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null && uri.toString().contains('payment-success')) {
         PayPalService.handlePaymentSuccess(context);
       }
       // Nếu muốn xử lý payment-cancel thì thêm else if ở đây

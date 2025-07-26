@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common/bloc/button/button_state.dart';
+import 'package:ecommerce/service_locator.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   ForgotPasswordPage({super.key});
@@ -75,7 +76,7 @@ class ForgotPasswordPage extends StatelessWidget {
       return BasicReactiveButton(
           onPressed: () {
             context.read<ButtonStateCubit>().execute(
-                usecase: SendPasswordResetEmailUseCase(),
+                usecase: sl<SendPasswordResetEmailUseCase>(),
                 params: _emailCon.text);
           },
           title: 'Continue');
