@@ -10,5 +10,5 @@ abstract class OrderRepository {
   Future<Either> orderResitration(OrderRegistrationReq order);
   Future<Either> getOrders();
   Future<Either> rebuyProduct(ProductOrderedEntity product);
-  Future<Either> cancelOrder(String orderId);
+  Future<Either> cancelOrder(String orderId, String cancelReason);
 }

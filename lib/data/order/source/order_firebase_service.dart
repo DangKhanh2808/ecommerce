@@ -12,7 +12,7 @@ abstract class OrderFirebaseService {
   Future<Either> orderResitration(OrderRegistrationReq order);
   Future<Either> getOrders();
   Future<Either> rebuyProduct(ProductOrderedEntity product);
-  Future<Either> cancelOrder(String orderId);
+  Future<Either> cancelOrder(String orderId, String cancelReason);
 }
 
 class OrderFirebaseServiceImpl extends OrderFirebaseService {
@@ -147,7 +147,7 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
   }
 
   @override
-  Future<Either> cancelOrder(String orderId) async {
+  Future<Either> cancelOrder(String orderId, String cancelReason) async {
     try {
       var user = FirebaseAuth.instance.currentUser;
       
@@ -186,7 +186,7 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
       
       orderStatus.add(cancelledStatus);
 
-      // Cập nhật document với trạng thái mới
+      // Cập nhật document với trạng thái mới và lý do hủy
       await FirebaseFirestore.instance
           .collection('Users')
           .doc(user?.uid)
@@ -195,6 +195,7 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
           .update({
         'orderStatus': orderStatus,
         'cancelledAt': Timestamp.now(),
+        'cancelReason': cancelReason,
       });
 
       return Right('Order cancelled successfully');

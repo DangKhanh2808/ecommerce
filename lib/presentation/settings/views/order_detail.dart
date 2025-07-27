@@ -101,31 +101,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Future<void> _cancelOrder() async {
-    // Hiển thị dialog xác nhận
-    bool? shouldCancel = await showDialog<bool>(
+    // Hiển thị dialog nhập lý do hủy
+    String? cancelReason = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-                      title: const Text('Cancel Order'),
-            content: const Text('Are you sure you want to cancel this order? This action cannot be undone.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
-              child: const Text('Cancel Order'),
-            ),
-          ],
-        );
+        return CancelOrderDialog();
       },
     );
 
-    if (shouldCancel != true) return;
+    if (cancelReason == null || cancelReason.trim().isEmpty) return;
 
     setState(() {
       _isCancelling = true;
@@ -133,7 +117,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
     try {
       final result = await sl<CancelOrderUseCase>().call(
-        params: widget.orderEntity.orderId,
+        params: {
+          'orderId': widget.orderEntity.orderId,
+          'cancelReason': cancelReason,
+        },
       );
 
       result.fold(
@@ -513,6 +500,80 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CancelOrderDialog extends StatefulWidget {
+  @override
+  State<CancelOrderDialog> createState() => _CancelOrderDialogState();
+}
+
+class _CancelOrderDialogState extends State<CancelOrderDialog> {
+  final TextEditingController _reasonController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Cancel Order'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Please provide a reason for cancelling this order:',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _reasonController,
+              decoration: const InputDecoration(
+                labelText: 'Cancellation Reason',
+                hintText: 'Enter the reason for cancellation...',
+                border: OutlineInputBorder(),
+                filled: true,
+              ),
+              maxLines: 3,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter a cancellation reason';
+                }
+                if (value.trim().length < 10) {
+                  return 'Reason must be at least 10 characters';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.of(context).pop(_reasonController.text.trim());
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Confirm Cancellation'),
+        ),
+      ],
     );
   }
 }

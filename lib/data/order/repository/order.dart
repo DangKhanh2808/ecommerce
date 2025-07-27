@@ -78,8 +78,8 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Either> cancelOrder(String orderId) async {
-    var returnedData = await sl<OrderFirebaseService>().cancelOrder(orderId);
+  Future<Either> cancelOrder(String orderId, String cancelReason) async {
+    var returnedData = await sl<OrderFirebaseService>().cancelOrder(orderId, cancelReason);
     return returnedData.fold(
       (error) {
         return Left(error);
