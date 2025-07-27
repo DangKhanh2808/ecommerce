@@ -13,23 +13,34 @@ class ReviewFirebaseServiceImpl implements ReviewFirebaseService {
 
   @override
   Future<void> submitReview(ReviewModel review) async {
-    await firestore
-        .collection('products')
+    // Sử dụng Firebase auto-generated ID thay vì reviewId từ model
+    final reviewData = review.toMap();
+    // Loại bỏ reviewId vì Firebase sẽ tự tạo
+    reviewData.remove('reviewId');
+    
+    final docRef = await firestore
+        .collection('Products')
         .doc(review.productId)
         .collection('reviews')
-        .doc(review.reviewId)
-        .set(review.toMap());
+        .add(reviewData);
+    
+    // Cập nhật lại reviewId với ID thực tế từ Firebase
+    await docRef.update({'reviewId': docRef.id});
   }
 
   @override
   Future<List<ReviewModel>> getReviews(String productId) async {
     final snapshot = await firestore
-        .collection('products')
+        .collection('Products')
         .doc(productId)
         .collection('reviews')
         .orderBy('createdAt', descending: true)
         .get();
 
-    return snapshot.docs.map((e) => ReviewModel.fromMap(e.data())).toList();
+    return snapshot.docs.map((e) {
+      final data = e.data();
+      data['reviewId'] = e.id; // Sử dụng document ID làm reviewId
+      return ReviewModel.fromMap(data);
+    }).toList();
   }
 }

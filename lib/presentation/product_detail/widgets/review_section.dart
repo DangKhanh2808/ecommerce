@@ -36,7 +36,6 @@ class _ReviewSectionState extends State<ReviewSection> {
     if (content.isEmpty) return;
 
     final review = ReviewEntity(
-      reviewId: DateTime.now().millisecondsSinceEpoch.toString(),
       productId: widget.productId,
       userId: widget.userId,
       userName: widget.userName,

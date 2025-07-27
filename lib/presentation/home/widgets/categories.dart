@@ -31,8 +31,44 @@ class Categories extends StatelessWidget {
           if (state is CategoriesLoaded) {
             return _categoriesList(context, state.categories);
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+          // Show placeholder instead of loading indicator
+          return _categoriesPlaceholder(context);
+        },
+      ),
+    );
+  }
+
+  Widget _categoriesPlaceholder(BuildContext context) {
+    return SizedBox(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 4, // Show 4 placeholder items
+        itemBuilder: (context, index) {
+          return Container(
+            width: 80,
+            margin: const EdgeInsets.only(right: 16),
+            child: Column(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 12,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -46,38 +82,31 @@ class Categories extends StatelessWidget {
       height: 120,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => CategoryProductsPage(categoryEntity: categories[index]),
+                  builder: (context) => CategoryProductsPage(
+                    categoryEntity: categories[index],
+                  ),
                 ),
               );
             },
-            child: Container(
+            child: SizedBox(
               width: 80,
               child: Column(
                 children: [
                   Container(
-                    height: 70,
-                    width: 70,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.white, Colors.grey.shade100],
+                      border: Border.all(
+                        color: theme.dividerColor,
+                        width: 1,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: ClipOval(
                       child: Image.network(

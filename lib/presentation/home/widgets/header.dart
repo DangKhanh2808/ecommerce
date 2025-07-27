@@ -42,14 +42,6 @@ class Header extends StatelessWidget {
         ),
         child: BlocBuilder<UserInforDisplayCubit, UserInforDisplayState>(
           builder: (context, state) {
-            if (state is UserInforLoading) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              );
-            }
-
             if (state is UserInforLoaded) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,8 +76,68 @@ class Header extends StatelessWidget {
               );
             }
 
-            return Container();
+            // Show placeholder instead of loading indicator
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _profileImagePlaceholder(),
+                    _genderPlaceholder(),
+                    _card(context),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  AppStrings.welcomeBack,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white70,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 24,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _profileImagePlaceholder() {
+    return Container(
+      height: 48,
+      width: 48,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.3),
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white,
+          width: 2,
+        ),
+      ),
+    );
+  }
+
+  Widget _genderPlaceholder() {
+    return Container(
+      height: 40,
+      width: 80,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.3),
+          width: 1,
         ),
       ),
     );

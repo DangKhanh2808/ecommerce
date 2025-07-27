@@ -1,5 +1,5 @@
 class ReviewEntity {
-  final String reviewId;
+  final String? reviewId; // Có thể null khi tạo mới
   final String productId;
   final String userId;
   final String userName;
@@ -8,7 +8,7 @@ class ReviewEntity {
   final DateTime createdAt;
 
   ReviewEntity({
-    required this.reviewId,
+    this.reviewId, // Không bắt buộc nữa
     required this.productId,
     required this.userId,
     required this.userName,

@@ -10,7 +10,15 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
   @override
   Future<void> submitReview(ReviewEntity review) {
-    return service.submitReview(ReviewModel.fromEntity(review));
+    // Sử dụng factory method để tạo ReviewModel mới
+    final reviewModel = ReviewModel.createNew(
+      productId: review.productId,
+      userId: review.userId,
+      userName: review.userName,
+      content: review.content,
+      rating: review.rating,
+    );
+    return service.submitReview(reviewModel);
   }
 
   @override

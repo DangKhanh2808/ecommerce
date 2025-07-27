@@ -19,9 +19,6 @@ class TopSelling extends StatelessWidget {
             ..displayProducts(),
       child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
         builder: (context, state) {
-          if (state is ProductsLoading) {
-            return const CircularProgressIndicator();
-          }
           if (state is ProductsLoaded) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +32,15 @@ class TopSelling extends StatelessWidget {
               ],
             );
           }
-          return Container();
+          // Show placeholder instead of loading indicator
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _topSelling(),
+              const SizedBox(height: 20),
+              _productsPlaceholder(),
+            ],
+          );
         },
       ),
     );
@@ -53,23 +58,65 @@ class TopSelling extends StatelessWidget {
     );
   }
 
-  Widget _products(List<ProductEntity> products) {
+  Widget _productsPlaceholder() {
     return SizedBox(
-      height: 300,
-      child: ListView.separated(
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
+      height: 280,
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        itemCount: 3, // Show 3 placeholder items
         itemBuilder: (context, index) {
-          return ProductCard(
-            productEntity: products[index],
+          return Container(
+            width: 160,
+            margin: const EdgeInsets.only(right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 160,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 16,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  height: 12,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
           );
         },
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 10,
-        ),
+      ),
+    );
+  }
+
+  Widget _products(List<ProductEntity> products) {
+    return SizedBox(
+      height: 280,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            width: 160,
+            child: ProductCard(productEntity: products[index]),
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 16),
         itemCount: products.length,
       ),
     );
