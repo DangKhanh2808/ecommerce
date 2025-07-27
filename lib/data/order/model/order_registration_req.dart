@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/data/order/model/order_status.dart';
 import 'package:ecommerce/data/order/model/product_ordered.dart';
 import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 
@@ -8,6 +10,8 @@ class OrderRegistrationReq {
   final int itemCount;
   final double totalPrice;
   final String code;
+  final String orderId;
+  final List<OrderStatusModel> orderStatus;
 
   OrderRegistrationReq({
     required this.products,
@@ -16,11 +20,46 @@ class OrderRegistrationReq {
     required this.itemCount,
     required this.totalPrice,
     String? code,
-  }) : code = code ?? _generateCode();
+    String? orderId,
+    List<OrderStatusModel>? orderStatus,
+  }) : code = code ?? _generateCode(),
+       orderId = orderId ?? _generateOrderId(),
+       orderStatus = orderStatus ?? _generateInitialOrderStatus();
 
   static String _generateCode() {
     final now = DateTime.now();
     return 'OD-${now.microsecondsSinceEpoch}';
+  }
+
+  static String _generateOrderId() {
+    final now = DateTime.now();
+    return 'ORDER-${now.millisecondsSinceEpoch}';
+  }
+
+  static List<OrderStatusModel> _generateInitialOrderStatus() {
+    final now = Timestamp.now();
+    return [
+      OrderStatusModel(
+        title: 'Order Placed',
+        done: true,
+        createdDate: now,
+      ),
+      OrderStatusModel(
+        title: 'Processing',
+        done: true,
+        createdDate: now,
+      ),
+      OrderStatusModel(
+        title: 'Shipped',
+        done: false,
+        createdDate: now,
+      ),
+      OrderStatusModel(
+        title: 'Delivered',
+        done: false,
+        createdDate: now,
+      ),
+    ];
   }
 
   Map<String, dynamic> toMap() {
@@ -31,6 +70,8 @@ class OrderRegistrationReq {
       'totalPrice': totalPrice,
       'shippingAddress': shippingAddress,
       'code': code,
+      'orderId': orderId,
+      'orderStatus': orderStatus.map((e) => e.toMap()).toList(),
     };
   }
 }

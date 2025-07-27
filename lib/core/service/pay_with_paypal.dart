@@ -271,8 +271,31 @@ class PayPalService {
         'paymentMethod': paymentMethod,
         'status': 'paid',
         'createdAt': FieldValue.serverTimestamp(),
-        'orderId': DateTime.now().millisecondsSinceEpoch.toString(),
+        'orderId': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
+        'code': 'OD-${DateTime.now().microsecondsSinceEpoch}',
         'userId': userId, // Thêm userId vào order data
+        'orderStatus': [
+          {
+            'title': 'Order Placed',
+            'done': true,
+            'createdDate': FieldValue.serverTimestamp(),
+          },
+          {
+            'title': 'Processing',
+            'done': true,
+            'createdDate': FieldValue.serverTimestamp(),
+          },
+          {
+            'title': 'Shipped',
+            'done': false,
+            'createdDate': FieldValue.serverTimestamp(),
+          },
+          {
+            'title': 'Delivered',
+            'done': false,
+            'createdDate': FieldValue.serverTimestamp(),
+          },
+        ],
       };
 
       // Lưu vào Users/{userId}/Orders/{autoDocId}

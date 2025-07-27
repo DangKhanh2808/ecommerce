@@ -17,11 +17,18 @@ class ProductColorModel {
   }
 
   factory ProductColorModel.fromMap(Map<String, dynamic> map) {
+    List<int> rgbList = List<int>.from(
+      map['rgb']?.map((e) => e) ?? [0, 0, 0],
+    );
+    
+    // Đảm bảo rgb array có ít nhất 3 phần tử
+    while (rgbList.length < 3) {
+      rgbList.add(0);
+    }
+    
     return ProductColorModel(
-      title: map['title'] as String,
-      rgb: List<int>.from(
-        map['rgb'].map((e) => e),
-      ),
+      title: map['title'] as String? ?? 'Unknown',
+      rgb: rgbList,
     );
   }
 }

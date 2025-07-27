@@ -75,11 +75,14 @@ class CheckOut extends StatelessWidget {
           ),
           BasicAppButton(
             onPressed: () {
-              AppNavigator.push(
-                  context,
-                  CheckOutPage(
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CheckOutPage(
                     products: products,
-                  ));
+                  ),
+                ),
+              );
             },
             title: 'Checkout',
           )

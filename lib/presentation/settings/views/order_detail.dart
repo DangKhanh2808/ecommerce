@@ -1,6 +1,7 @@
 import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/common/widgets/appbar/app_bar.dart';
 import 'package:ecommerce/domain/order/entities/order.dart';
+import 'package:ecommerce/domain/order/usecases/cancel_order.dart';
 import 'package:ecommerce/domain/order/usecases/rebuy_product.dart';
 import 'package:ecommerce/presentation/settings/views/order_items.dart';
 import 'package:ecommerce/service_locator.dart';
@@ -19,6 +20,25 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
   bool _isLoading = false;
+  bool _isCancelling = false;
+
+  // Kiểm tra xem đơn hàng có thể hủy được không
+  bool _canCancelOrder() {
+    // Kiểm tra xem đơn hàng đã bị hủy chưa
+    bool isCancelled = widget.orderEntity.orderStatus.any((status) => 
+        status.title == 'Cancelled' && status.done == true);
+    
+    // Kiểm tra xem đơn hàng đã được giao chưa
+    bool isDelivered = widget.orderEntity.orderStatus.any((status) => 
+        status.title == 'Delivered' && status.done == true);
+    
+    // Kiểm tra xem đơn hàng đã được ship chưa
+    bool isShipped = widget.orderEntity.orderStatus.any((status) => 
+        status.title == 'Shipped' && status.done == true);
+    
+    // Chỉ có thể hủy nếu chưa bị hủy, chưa được giao và chưa được ship
+    return !isCancelled && !isDelivered && !isShipped;
+  }
 
   Future<void> _rebuyAllProducts() async {
     setState(() {
@@ -76,6 +96,76 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     } finally {
       setState(() {
         _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _cancelOrder() async {
+    // Hiển thị dialog xác nhận
+    bool? shouldCancel = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Hủy đơn hàng'),
+          content: const Text('Bạn có chắc chắn muốn hủy đơn hàng này? Hành động này không thể hoàn tác.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Không'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Hủy đơn hàng'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldCancel != true) return;
+
+    setState(() {
+      _isCancelling = true;
+    });
+
+    try {
+      final result = await sl<CancelOrderUseCase>().call(
+        params: widget.orderEntity.orderId,
+      );
+
+      result.fold(
+        (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error),
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Đơn hàng đã được hủy thành công'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Quay lại trang trước và refresh danh sách đơn hàng
+          Navigator.of(context).pop(true);
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Có lỗi xảy ra. Vui lòng thử lại.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isCancelling = false;
       });
     }
   }
@@ -215,37 +305,78 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ElevatedButton.icon(
-                  onPressed: _isLoading ? null : _rebuyAllProducts,
-                  icon: _isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton.icon(
+                        onPressed: _isLoading ? null : _rebuyAllProducts,
+                        icon: _isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Icon(Icons.shopping_cart, size: 16),
+                        label: Text(
+                          _isLoading ? 'Adding...' : 'Rebuy All',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        )
-                      : const Icon(Icons.shopping_cart, size: 16),
-                  label: Text(
-                    _isLoading ? 'Adding...' : 'Rebuy All',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                          elevation: 2,
+                        ),
+                      ),
                     ),
-                    elevation: 2,
                   ),
-                ),
+                  if (_canCancelOrder()) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        child: ElevatedButton.icon(
+                          onPressed: _isCancelling ? null : _cancelOrder,
+                          icon: _isCancelling
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  ),
+                                )
+                              : const Icon(Icons.cancel, size: 16),
+                          label: Text(
+                            _isCancelling ? 'Cancelling...' : 'Cancel Order',
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

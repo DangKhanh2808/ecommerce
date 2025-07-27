@@ -19,6 +19,14 @@ class OrderStatusModel {
       createdDate: map['createdDate'] as Timestamp? ?? Timestamp.now(),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'done': done,
+      'createdDate': createdDate,
+    };
+  }
 }
 
 extension OrderStatusXModel on OrderStatusModel {

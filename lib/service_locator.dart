@@ -23,6 +23,7 @@ import 'package:ecommerce/domain/category/repository/category.dart';
 import 'package:ecommerce/domain/category/usecases/get_categories.dart';
 import 'package:ecommerce/domain/order/repository/order.dart';
 import 'package:ecommerce/domain/order/usecases/add_to_cart.dart';
+import 'package:ecommerce/domain/order/usecases/cancel_order.dart';
 import 'package:ecommerce/domain/order/usecases/get_cart_products.dart';
 import 'package:ecommerce/domain/order/usecases/get_orders.dart';
 import 'package:ecommerce/domain/order/usecases/order_registration.dart';
@@ -186,6 +187,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<RebuyProductUseCase>(
     RebuyProductUseCase(sl<OrderRepository>()),
+  );
+
+  sl.registerSingleton<CancelOrderUseCase>(
+    CancelOrderUseCase(sl<OrderRepository>()),
   );
 
   sl.registerSingleton<SignoutUseCase>(

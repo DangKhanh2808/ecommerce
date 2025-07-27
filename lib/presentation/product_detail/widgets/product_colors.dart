@@ -79,9 +79,9 @@ class ProductColors extends StatelessWidget {
                                   width: 20,
                                   decoration: BoxDecoration(
                                     color: Color.fromRGBO(
-                                        productEntity.colors[index].rgb[0],
-                                        productEntity.colors[index].rgb[1],
-                                        productEntity.colors[index].rgb[2],
+                                        productEntity.colors[index].rgb.isNotEmpty ? productEntity.colors[index].rgb[0] : 0,
+                                        productEntity.colors[index].rgb.length > 1 ? productEntity.colors[index].rgb[1] : 0,
+                                        productEntity.colors[index].rgb.length > 2 ? productEntity.colors[index].rgb[2] : 0,
                                         1),
                                     shape: BoxShape.circle,
                                   ),

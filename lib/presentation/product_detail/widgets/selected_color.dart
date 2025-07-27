@@ -56,9 +56,9 @@ class SelectedColor extends StatelessWidget {
                           width: 16,
                           decoration: BoxDecoration(
                             color: Color.fromRGBO(
-                                colorsToShow[index].rgb[0],
-                                colorsToShow[index].rgb[1],
-                                colorsToShow[index].rgb[2],
+                                colorsToShow[index].rgb.isNotEmpty ? colorsToShow[index].rgb[0] : 0,
+                                colorsToShow[index].rgb.length > 1 ? colorsToShow[index].rgb[1] : 0,
+                                colorsToShow[index].rgb.length > 2 ? colorsToShow[index].rgb[2] : 0,
                                 1),
                             shape: BoxShape.circle,
                           ),

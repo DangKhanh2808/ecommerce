@@ -9,6 +9,7 @@ class OrderModel {
   final int itemCount;
   final double totalPrice;
   final String code;
+  final String orderId;
   final List<OrderStatusModel> orderStatus;
 
   OrderModel({
@@ -18,6 +19,7 @@ class OrderModel {
     required this.itemCount,
     required this.totalPrice,
     required this.code,
+    required this.orderId,
     required this.orderStatus,
   });
 
@@ -32,6 +34,7 @@ class OrderModel {
       itemCount: map['itemCount'] as int? ?? 0,
       totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0.0,
       code: map['code']?.toString() ?? '',
+      orderId: map['orderId']?.toString() ?? '',
       orderStatus: (map['orderStatus'] as List<dynamic>?)
               ?.map((status) => OrderStatusModel.fromMap(status))
               .toList() ??
@@ -49,6 +52,7 @@ extension OrderXModel on OrderModel {
       itemCount: itemCount,
       totalPrice: totalPrice,
       code: code,
+      orderId: orderId,
       orderStatus: orderStatus.map((e) => e.toEntity()).toList(),
     );
   }

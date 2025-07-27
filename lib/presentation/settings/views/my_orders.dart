@@ -142,12 +142,19 @@ class _MyOrdersContentState extends State<_MyOrdersContent> {
           padding: const EdgeInsets.all(16),
           itemBuilder: (context, index) {
             return GestureDetector(
-              onTap: () {
-                AppNavigator.push(
+              onTap: () async {
+                final result = await Navigator.push(
                     context,
-                    OrderDetailPage(
-                      orderEntity: orders[index],
+                    MaterialPageRoute(
+                      builder: (context) => OrderDetailPage(
+                        orderEntity: orders[index],
+                      ),
                     ));
+                
+                // Nếu quay lại với result = true, refresh danh sách đơn hàng
+                if (result == true) {
+                  context.read<OrdersDisplayCubit>().refreshOrders();
+                }
               },
               child: Container(
                 constraints: const BoxConstraints(minHeight: 80),
@@ -218,6 +225,8 @@ class _MyOrdersContentState extends State<_MyOrdersContent> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 4),
+                          _buildOrderStatus(orders[index]),
                         ],
                       ),
                     ),
@@ -234,6 +243,62 @@ class _MyOrdersContentState extends State<_MyOrdersContent> {
           },
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemCount: orders.length,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderStatus(OrderEntity order) {
+    // Tìm trạng thái cuối cùng của đơn hàng
+    String statusText = 'Processing';
+    Color statusColor = Colors.orange;
+    
+    if (order.orderStatus.isNotEmpty) {
+      // Tìm trạng thái cuối cùng (done = true)
+      final lastStatus = order.orderStatus.lastWhere(
+        (status) => status.done,
+        orElse: () => order.orderStatus.first,
+      );
+      
+      switch (lastStatus.title) {
+        case 'Cancelled':
+          statusText = 'Cancelled';
+          statusColor = Colors.red;
+          break;
+        case 'Delivered':
+          statusText = 'Delivered';
+          statusColor = Colors.green;
+          break;
+        case 'Shipped':
+          statusText = 'Shipped';
+          statusColor = Colors.blue;
+          break;
+        case 'Processing':
+          statusText = 'Processing';
+          statusColor = Colors.orange;
+          break;
+        default:
+          statusText = lastStatus.title;
+          statusColor = Colors.grey;
+      }
+    }
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: statusColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: statusColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        statusText,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: statusColor,
         ),
       ),
     );

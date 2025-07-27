@@ -33,6 +33,10 @@ class OrdersDisplayCubit extends Cubit<OrdersDisplayState> {
     }
   }
 
+  Future<void> refreshOrders() async {
+    await displayOrders();
+  }
+
   // Helper method to safely emit states
   void _safeEmit(OrdersDisplayState state) {
     if (!isClosed) {

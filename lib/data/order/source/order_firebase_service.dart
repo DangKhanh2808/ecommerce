@@ -12,6 +12,7 @@ abstract class OrderFirebaseService {
   Future<Either> orderResitration(OrderRegistrationReq order);
   Future<Either> getOrders();
   Future<Either> rebuyProduct(ProductOrderedEntity product);
+  Future<Either> cancelOrder(String orderId);
 }
 
 class OrderFirebaseServiceImpl extends OrderFirebaseService {
@@ -142,6 +143,63 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
       return Right('Product added to cart successfully');
     } catch (e) {
       return Left('Failed to add product to cart. Please try again.');
+    }
+  }
+
+  @override
+  Future<Either> cancelOrder(String orderId) async {
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      
+      // Tìm document của order trong Firestore bằng orderId
+      final orderQuery = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user?.uid)
+          .collection('Orders')
+          .where('orderId', isEqualTo: orderId)
+          .get();
+
+      if (orderQuery.docs.isEmpty) {
+        return Left('Order not found');
+      }
+
+      final orderDoc = orderQuery.docs.first;
+      
+      // Kiểm tra trạng thái hiện tại của đơn hàng
+      final orderData = orderDoc.data();
+      final orderStatus = orderData['orderStatus'] as List<dynamic>? ?? [];
+      
+      // Kiểm tra xem đơn hàng đã được giao chưa
+      bool isDelivered = orderStatus.any((status) => 
+          status['title'] == 'Delivered' && status['done'] == true);
+      
+      if (isDelivered) {
+        return Left('Cannot cancel delivered order');
+      }
+
+      // Thêm trạng thái "Cancelled" vào orderStatus
+      final cancelledStatus = {
+        'title': 'Cancelled',
+        'done': true,
+        'createdDate': Timestamp.now(),
+      };
+      
+      orderStatus.add(cancelledStatus);
+
+      // Cập nhật document với trạng thái mới
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user?.uid)
+          .collection('Orders')
+          .doc(orderDoc.id)
+          .update({
+        'orderStatus': orderStatus,
+        'cancelledAt': Timestamp.now(),
+      });
+
+      return Right('Order cancelled successfully');
+    } catch (e) {
+      return Left('Failed to cancel order. Please try again.');
     }
   }
 }

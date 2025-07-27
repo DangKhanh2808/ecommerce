@@ -8,6 +8,7 @@ class OrderEntity {
   final int itemCount;
   final double totalPrice;
   final String code;
+  final String orderId;
   final List<OrderStatusEntity> orderStatus;
 
   OrderEntity({
@@ -17,6 +18,7 @@ class OrderEntity {
     required this.itemCount,
     required this.totalPrice,
     required this.code,
+    required this.orderId,
     required this.orderStatus,
   });
 }
