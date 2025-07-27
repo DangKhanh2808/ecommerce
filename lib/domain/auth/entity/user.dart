@@ -8,6 +8,7 @@ class UserEntity {
   final String role;
   final String? phone;
   final String? address;
+  final String? paymentMethod;
 
   UserEntity({
     required this.userId,
@@ -19,5 +20,6 @@ class UserEntity {
     required this.role,
     this.phone,
     this.address,
+    this.paymentMethod,
   });
 }

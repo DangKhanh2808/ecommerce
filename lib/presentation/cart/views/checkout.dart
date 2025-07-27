@@ -36,6 +36,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final subtotal = CartHelper.calculateCartSubtotal(widget.products);
+    final shipping = CartHelper.calculateShippingCost(widget.products);
+    final tax = 0.0;
+    final total = subtotal + shipping + tax;
     return BlocProvider(
       create: (context) {
         _buttonStateCubit = ButtonStateCubit();
@@ -260,6 +264,66 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               ),
                             )).toList(),
                             const Divider(),
+                            // Subtotal
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Subtotal:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  '\$${subtotal.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // Shipping
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Shipping:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // Tax
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Tax:',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  '\$${tax.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                             // Total
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -272,7 +336,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                   ),
                                 ),
                                 Text(
-                                  '\$${CartHelper.calculateCartSubtotal(widget.products)}',
+                                  '\$${total.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -329,7 +393,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Total: \$${CartHelper.calculateCartSubtotal(widget.products)}',
+                              'Total: \$${total.toStringAsFixed(2)}',
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(height: 4),
@@ -339,7 +403,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Shipping: Free',
+                              'Shipping: ${shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}'}',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 4),
@@ -372,7 +436,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          final total = CartHelper.calculateCartSubtotal(widget.products);
+                          final subtotal = CartHelper.calculateCartSubtotal(widget.products);
+                          final shipping = CartHelper.calculateShippingCost(widget.products);
+                          final tax = 0.0;
+                          final total = subtotal + shipping + tax;
                           _placeOrderWithCubit(total);
                         },
                         style: ElevatedButton.styleFrom(
@@ -403,7 +470,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
     print('💳 Processing PayPal payment...');
     
     try {
-      final total = CartHelper.calculateCartSubtotal(widget.products);
+      final subtotal = CartHelper.calculateCartSubtotal(widget.products);
+      final shipping = CartHelper.calculateShippingCost(widget.products);
+      final tax = 0.0;
+      final total = subtotal + shipping + tax;
       
       // Lưu thông tin đơn hàng hiện tại
       PayPalService.currentOrderInfo = {
@@ -439,9 +509,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   void _processCardPayment(BuildContext context) {
-    final total = CartHelper.calculateCartSubtotal(widget.products);
+    final subtotal = CartHelper.calculateCartSubtotal(widget.products);
+    final shipping = CartHelper.calculateShippingCost(widget.products);
+    final tax = 0.0;
+    final total = subtotal + shipping + tax;
     print('Processing card payment...');
-    print('   - Total: \$${CartHelper.calculateCartSubtotal(widget.products)}');
+    print('   - Total: \$${total}');
     print('   - Products count: ${widget.products.length}');
     
     // Simulate card payment processing

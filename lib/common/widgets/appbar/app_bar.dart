@@ -17,8 +17,10 @@ class BasicAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return AppBar(
-      backgroundColor: backgroundColor ?? Colors.transparent,
+      backgroundColor: backgroundColor ?? theme.appBarTheme.backgroundColor,
       elevation: 0,
       centerTitle: true,
       automaticallyImplyLeading: false,
@@ -35,10 +37,15 @@ class BasicAppbar extends StatelessWidget implements PreferredSizeWidget {
               icon: Container(
                 height: 50,
                 width: 50,
-                decoration: const BoxDecoration(
-                    color: AppColors.secondBackground, shape: BoxShape.circle),
-                child: const Icon(Icons.arrow_back_ios_new,
-                    size: 15, color: Colors.white),
+                decoration: BoxDecoration(
+                  color: isDark ? theme.cardColor : AppColors.secondBackgroundLight,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  size: 15,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
               ),
             ),
     );

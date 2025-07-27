@@ -26,6 +26,12 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     emit(const ImagePickerState());
   }
 
+  void removeImage(File image) {
+    final updatedImages = List<File>.from(state.localImages)..remove(image);
+    // Nếu muốn xóa cả imageUrls tương ứng, cần mapping, ở đây chỉ xóa ảnh local
+    emit(state.copyWith(localImages: updatedImages));
+  }
+
   /// ✅ Upload all local images to Firebase and update imageUrls
   Future<void> uploadImagesToFirebase() async {
     emit(state.copyWith(loading: true));

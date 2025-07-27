@@ -15,12 +15,24 @@ class ProductOrderedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final textColor = theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
+    final secondaryTextColor = theme.textTheme.bodySmall?.color ?? (isDark ? Colors.grey[300] : Colors.grey[700]);
     return Container(
       height: 100,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          color: AppColors.secondBackground,
-          borderRadius: BorderRadius.circular(8)),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black12 : Colors.grey.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,18 +47,18 @@ class ProductOrderedCard extends StatelessWidget {
                   child: Container(
                     width: 90,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(
-                                ImageDisplayHelper.generateProductImageURL(
-                                    productOrderedEntity.productImage))),
-                        borderRadius: BorderRadius.circular(4)),
+                      color: theme.cardColor,
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                          ImageDisplayHelper.generateProductImageURL(productOrderedEntity.productImage),
+                        ),
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 Expanded(
                   flex: 6,
                   child: Column(
@@ -56,53 +68,23 @@ class ProductOrderedCard extends StatelessWidget {
                       Text(
                         productOrderedEntity.productTitle,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 16),
+                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       Row(
                         children: [
-                          Text.rich(
-                              overflow: TextOverflow.ellipsis,
-                              TextSpan(
-                                  text: 'Size - ',
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10),
-                                  children: [
-                                    TextSpan(
-                                      text: productOrderedEntity.productSize,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10),
-                                    )
-                                  ])),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text.rich(
-                              overflow: TextOverflow.ellipsis,
-                              TextSpan(
-                                  text: 'Color - ',
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10),
-                                  children: [
-                                    TextSpan(
-                                      text: productOrderedEntity.productColor,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10),
-                                    )
-                                  ])),
+                          Text('Size: ', style: theme.textTheme.bodySmall?.copyWith(color: secondaryTextColor)),
+                          Text(productOrderedEntity.productSize, style: theme.textTheme.bodySmall?.copyWith(color: textColor)),
+                          const SizedBox(width: 10),
+                          Text('Color: ', style: theme.textTheme.bodySmall?.copyWith(color: secondaryTextColor)),
+                          Text(productOrderedEntity.productColor, style: theme.textTheme.bodySmall?.copyWith(color: textColor)),
+                          const SizedBox(width: 10),
+                          Text('Qty: ', style: theme.textTheme.bodySmall?.copyWith(color: secondaryTextColor)),
+                          Text('${productOrderedEntity.productQuantity}', style: theme.textTheme.bodySmall?.copyWith(color: textColor)),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -113,29 +95,29 @@ class ProductOrderedCard extends StatelessWidget {
               children: [
                 Text(
                   '\$${productOrderedEntity.totalPrice}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 14),
+                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.secondary),
                 ),
                 GestureDetector(
                   onTap: () {
-                    context
-                        .read<CartProductsDisplayCubit>()
-                        .removeProduct(productOrderedEntity);
+                    context.read<CartProductsDisplayCubit>().removeProduct(productOrderedEntity);
                   },
                   child: Container(
                     height: 23,
                     width: 23,
-                    decoration: const BoxDecoration(
-                        color: Color(0xffFF8383), shape: BoxShape.circle),
-                    child: const Icon(
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withOpacity(isDark ? 0.8 : 0.9),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
                       Icons.remove,
                       size: 15,
+                      color: Colors.white,
                     ),
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -14,46 +14,42 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: BasicAppbar(
-        title: Text('Cart'),
+        title: Text('Cart', style: theme.textTheme.headlineSmall),
+        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocProvider(
-          create: (context) => CartProductsDisplayCubit()..displayCartProduct(),
-          child:
-              BlocBuilder<CartProductsDisplayCubit, CartProductsDisplayState>(
-            builder: (context, state) {
-              if (state is CartProductsLoading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (state is CartProductsLoaded) {
-                return state.products.isEmpty
-                    ? Center(child: _cartIsEmpty())
-                    : Stack(
-                        children: [
-                          _products(state.products),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: CheckOut(
-                              products: state.products,
-                            ),
-                          )
-                        ],
-                      );
-              }
-
-              if (state is LoadCartProductsFailure) {
-                return Center(
-                  child: Text(state.errorMessage),
-                );
-              }
-
-              return Container();
-            },
-          )),
+        create: (context) => CartProductsDisplayCubit()..displayCartProduct(),
+        child: BlocBuilder<CartProductsDisplayCubit, CartProductsDisplayState>(
+          builder: (context, state) {
+            if (state is CartProductsLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is CartProductsLoaded) {
+              return state.products.isEmpty
+                  ? Center(child: _cartIsEmpty(context))
+                  : Stack(
+                      children: [
+                        _products(state.products),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: CheckOut(products: state.products),
+                        ),
+                      ],
+                    );
+            }
+            if (state is LoadCartProductsFailure) {
+              return Center(
+                child: Text(state.errorMessage, style: theme.textTheme.bodyLarge),
+              );
+            }
+            return Container();
+          },
+        ),
+      ),
     );
   }
 
@@ -61,30 +57,25 @@ class CartPage extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, index) {
-        return ProductOrderedCard(
-          productOrderedEntity: products[index],
-        );
+        return ProductOrderedCard(productOrderedEntity: products[index]);
       },
-      separatorBuilder: (context, index) => const SizedBox(
-        height: 10,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemCount: products.length,
     );
   }
 
-  Widget _cartIsEmpty() {
+  Widget _cartIsEmpty(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(AppVectors.cartBag),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
+        SvgPicture.asset(AppVectors.cartBag, color: theme.iconTheme.color, width: 80),
+        const SizedBox(height: 20),
+        Text(
           "Cart is empty",
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
-        )
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
+        ),
       ],
     );
   }

@@ -18,6 +18,10 @@ abstract class AuthFirebaseService {
   Future<String> getRole();
   Future<Either> updateUser(Map<String, dynamic> userData);
   Future<Either> changePassword(Map<String, dynamic> passwordData);
+  // Thêm cho admin
+  Future<Either> getAllUsers();
+  Future<Either> updateUserAddress(String userId, String newAddress);
+  Future<Either> updateUserPaymentMethod(String userId, String paymentMethod);
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -259,6 +263,36 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       return Left(errorMessage);
     } catch (e) {
       return Left('Unknown error: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> getAllUsers() async {
+    try {
+      var users = await FirebaseFirestore.instance.collection('Users').get();
+      return Right(users.docs.map((e) => e.data()).toList());
+    } catch (e) {
+      return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> updateUserAddress(String userId, String newAddress) async {
+    try {
+      await FirebaseFirestore.instance.collection('Users').doc(userId).update({'address': newAddress});
+      return Right('Address updated');
+    } catch (e) {
+      return Left('Update failed');
+    }
+  }
+
+  @override
+  Future<Either> updateUserPaymentMethod(String userId, String paymentMethod) async {
+    try {
+      await FirebaseFirestore.instance.collection('Users').doc(userId).update({'paymentMethod': paymentMethod});
+      return Right('Payment method updated');
+    } catch (e) {
+      return Left('Update failed');
     }
   }
 }
