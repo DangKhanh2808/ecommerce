@@ -63,12 +63,12 @@ class _ReviewSectionState extends State<ReviewSection> {
           listener: (context, state) {
             if (state is ReviewSubmitSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Đã gửi đánh giá')),
+                const SnackBar(content: Text('Review submitted')),
               );
             } else if (state is ReviewSubmitError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                    content: Text('Gửi đánh giá thất bại: ${state.message}')),
+                    content: Text('Failed to submit review: ${state.message}')),
               );
             }
           },

@@ -16,6 +16,8 @@ abstract class AuthFirebaseService {
   Future<Either> getUser();
   Future<Either> signOut();
   Future<String> getRole();
+  Future<Either> updateUser(Map<String, dynamic> userData);
+  Future<Either> changePassword(Map<String, dynamic> passwordData);
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -39,6 +41,9 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
         'age': user.age,
         'gender': user.gender,
         'image': returnedDate.user!.photoURL,
+        'phone': '',
+        'address': '',
+        'role': 'user',
       });
 
       return Right(
@@ -79,7 +84,7 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
         user.password == null ||
         user.email!.isEmpty ||
         user.password!.isEmpty) {
-      return const Left('Email hoặc mật khẩu không được để trống.');
+              return const Left('Email or password cannot be empty.');
     }
 
     try {
@@ -102,27 +107,27 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
         await prefs.setBool('isLoggedIn', true);
       }
 
-      return const Right('Đăng nhập thành công');
+              return const Right('Login successful');
     } on FirebaseAuthException catch (e) {
       String errorMessage;
 
       switch (e.code) {
         case 'invalid-email':
-          errorMessage = 'Email không hợp lệ.';
+          errorMessage = 'Invalid email.';
           break;
         case 'user-not-found':
-          errorMessage = 'Không tìm thấy tài khoản với email này.';
+                      errorMessage = 'No account found with this email.';
           break;
         case 'wrong-password':
-          errorMessage = 'Sai mật khẩu.';
+                      errorMessage = 'Wrong password.';
           break;
         default:
-          errorMessage = e.message ?? 'Đăng nhập thất bại.';
+                      errorMessage = e.message ?? 'Login failed.';
       }
 
       return Left(errorMessage);
     } catch (e) {
-      return Left('Đã xảy ra lỗi không xác định: ${e.toString()}');
+              return Left('An unknown error occurred: ${e.toString()}');
     }
   }
 
@@ -183,5 +188,77 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
         .get();
 
     return UserModel.fromMap(userData.data() ?? {}).toEntity().role;
+  }
+
+  @override
+  Future<Either> updateUser(Map<String, dynamic> userData) async {
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        return const Left('No logged in user found');
+      }
+
+      // Update information in Firestore
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(currentUser.uid)
+          .update(userData);
+
+      // Cập nhật displayName và photoURL trong Firebase Auth nếu có
+      if (userData.containsKey('firstName') && userData.containsKey('lastName')) {
+        await currentUser.updateDisplayName(
+          '${userData['firstName']} ${userData['lastName']}',
+        );
+      }
+
+      if (userData.containsKey('image')) {
+        await currentUser.updatePhotoURL(userData['image']);
+      }
+
+      return const Right('Information updated successfully');
+    } catch (e) {
+      return Left('Error updating information: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Either> changePassword(Map<String, dynamic> passwordData) async {
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        return const Left('No logged in user found');
+      }
+
+      final currentPassword = passwordData['currentPassword'] as String;
+      final newPassword = passwordData['newPassword'] as String;
+
+      // Re-authenticate user with current password
+      final credential = EmailAuthProvider.credential(
+        email: currentUser.email!,
+        password: currentPassword,
+      );
+
+      await currentUser.reauthenticateWithCredential(credential);
+
+      // Update password
+      await currentUser.updatePassword(newPassword);
+
+      return const Right('Password changed successfully');
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'wrong-password':
+          errorMessage = 'Current password is incorrect';
+          break;
+        case 'weak-password':
+          errorMessage = 'New password is too weak';
+          break;
+        default:
+          errorMessage = 'Error changing password: ${e.message}';
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left('Unknown error: ${e.toString()}');
+    }
   }
 }

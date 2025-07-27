@@ -9,10 +9,13 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({required this.authRepository}) : super(ProfileInitial());
 
   Future<void> loadProfile() async {
+    if (isClosed) return;
     emit(ProfileLoading());
 
     final result = await authRepository.getUser();
 
+    if (isClosed) return;
+    
     result.fold(
       (error) => emit(ProfileError(error)),
       (user) => emit(ProfileLoaded(user)),

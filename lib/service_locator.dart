@@ -19,6 +19,8 @@ import 'package:ecommerce/domain/auth/usecases/send_password_reset_email.dart';
 import 'package:ecommerce/domain/auth/usecases/signin.dart';
 import 'package:ecommerce/domain/auth/usecases/signout.dart';
 import 'package:ecommerce/domain/auth/usecases/signup.dart';
+import 'package:ecommerce/domain/auth/usecases/update_user.dart';
+import 'package:ecommerce/domain/auth/usecases/change_password.dart';
 import 'package:ecommerce/domain/category/repository/category.dart';
 import 'package:ecommerce/domain/category/usecases/get_categories.dart';
 import 'package:ecommerce/domain/order/repository/order.dart';
@@ -223,5 +225,13 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetReviewsUseCase>(
     GetReviewsUseCase(sl<ReviewRepository>()),
+  );
+
+  sl.registerSingleton<UpdateUserUseCase>(
+    UpdateUserUseCase(sl<AuthRepository>()),
+  );
+
+  sl.registerSingleton<ChangePasswordUseCase>(
+    ChangePasswordUseCase(sl<AuthRepository>()),
   );
 }

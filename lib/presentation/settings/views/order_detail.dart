@@ -106,19 +106,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Hủy đơn hàng'),
-          content: const Text('Bạn có chắc chắn muốn hủy đơn hàng này? Hành động này không thể hoàn tác.'),
+                      title: const Text('Cancel Order'),
+            content: const Text('Are you sure you want to cancel this order? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Không'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: const Text('Hủy đơn hàng'),
+              child: const Text('Cancel Order'),
             ),
           ],
         );
@@ -148,7 +148,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         (success) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Đơn hàng đã được hủy thành công'),
+              content: Text('Order has been cancelled successfully'),
               backgroundColor: Colors.green,
             ),
           );
@@ -159,7 +159,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Có lỗi xảy ra. Vui lòng thử lại.'),
+                      content: Text('An error occurred. Please try again.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -309,35 +309,35 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 children: [
                   Expanded(
                     child: SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                        onPressed: _isLoading ? null : _rebuyAllProducts,
-                        icon: _isLoading
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
-                            : const Icon(Icons.shopping_cart, size: 16),
-                        label: Text(
-                          _isLoading ? 'Adding...' : 'Rebuy All',
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                height: 40,
+                child: ElevatedButton.icon(
+                  onPressed: _isLoading ? null : _rebuyAllProducts,
+                  icon: _isLoading
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
-                          elevation: 2,
-                        ),
-                      ),
+                        )
+                      : const Icon(Icons.shopping_cart, size: 16),
+                  label: Text(
+                    _isLoading ? 'Adding...' : 'Rebuy All',
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 2,
+                  ),
+                ),
                     ),
                   ),
                   if (_canCancelOrder()) ...[

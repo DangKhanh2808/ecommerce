@@ -57,7 +57,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(width: 16),
-                      Text('Đang xử lý đơn hàng...'),
+                      Text('Processing order...'),
                     ],
                   ),
                 );
@@ -72,7 +72,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             // Hiển thị thông báo thành công
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Đặt hàng thành công!'),
+                content: Text('Order placed successfully!'),
                 backgroundColor: Colors.green,
                 duration: Duration(seconds: 2),
               ),
@@ -90,7 +90,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             // Đóng loading dialog nếu có
             Navigator.of(context).pop();
             var snackbar = SnackBar(
-              content: Text('Lỗi: ${state.errorMessage}'),
+                              content: Text('Error: ${state.errorMessage}'),
               backgroundColor: Colors.red,
               behavior: SnackBarBehavior.floating,
             );
@@ -430,7 +430,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Lỗi khi tạo thanh toán PayPal: $e'),
+                            content: Text('Error creating PayPal payment: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -464,18 +464,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Xác nhận đơn hàng'),
+                      title: const Text('Confirm Order'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Tổng tiền: \$${total.toStringAsFixed(2)}'),
+              Text('Total: \$${total.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
-              Text('Số sản phẩm: ${widget.products.length}'),
+              Text('Number of products: ${widget.products.length}'),
               const SizedBox(height: 8),
-              Text('Địa chỉ giao hàng: ${_addressController.text.isNotEmpty ? _addressController.text : 'Default Address'}'),
+              Text('Shipping address: ${_addressController.text.isNotEmpty ? _addressController.text : 'Default Address'}'),
               const SizedBox(height: 16),
-              const Text('Bạn có chắc chắn muốn đặt hàng không?'),
+              const Text('Are you sure you want to place this order?'),
             ],
           ),
           actions: [
@@ -483,7 +483,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               onPressed: () {
                 Navigator.of(context).pop(); // Đóng dialog
               },
-              child: const Text('Hủy'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -494,7 +494,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 backgroundColor: Colors.orange,
               ),
               child: const Text(
-                'Xác nhận',
+                'Confirm',
                 style: TextStyle(color: Colors.white),
               ),
             ),

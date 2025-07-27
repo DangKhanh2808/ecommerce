@@ -74,15 +74,15 @@ class PayPalService {
       print('❌ Error type: ${e.runtimeType}');
       print('❌ Error details: ${e.toString()}');
       
-      String errorMessage = 'Lỗi thanh toán PayPal';
+      String errorMessage = 'PayPal payment error';
       if (e.toString().contains('SocketException')) {
-        errorMessage = 'Không thể kết nối đến server PayPal. Vui lòng kiểm tra kết nối mạng.';
+                  errorMessage = 'Cannot connect to PayPal server. Please check your network connection.';
       } else if (e.toString().contains('TimeoutException')) {
-        errorMessage = 'Kết nối đến server PayPal bị timeout. Vui lòng thử lại.';
+                  errorMessage = 'PayPal server connection timeout. Please try again.';
       } else if (e.toString().contains('Connection refused')) {
-        errorMessage = 'Server PayPal không phản hồi. Vui lòng thử lại sau.';
+                  errorMessage = 'PayPal server not responding. Please try again later.';
       } else {
-        errorMessage = 'Lỗi thanh toán: ${e.toString()}';
+                  errorMessage = 'Payment error: ${e.toString()}';
       }
 
       _showErrorSnackBar(context, errorMessage);
@@ -129,15 +129,15 @@ class PayPalService {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Mở PayPal'),
+        title: const Text('Open PayPal'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Không thể tự động mở PayPal. Vui lòng:'),
+            const Text('Cannot automatically open PayPal. Please:'),
             const SizedBox(height: 10),
-            const Text('1. Copy link bên dưới'),
-            const Text('2. Mở trình duyệt'),
-            const Text('3. Paste link và thanh toán'),
+            const Text('1. Copy the link below'),
+            const Text('2. Open your browser'),
+            const Text('3. Paste the link and pay'),
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(8),
@@ -157,14 +157,14 @@ class PayPalService {
             onPressed: () {
               Clipboard.setData(ClipboardData(text: paypalUrl));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Đã copy link PayPal vào clipboard')),
+                const SnackBar(content: Text('PayPal link copied to clipboard')),
               );
             },
             child: const Text('Copy Link'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Đóng'),
+            child: const Text('Close'),
           ),
         ],
       ),
@@ -181,7 +181,7 @@ class PayPalService {
           children: [
             CircularProgressIndicator(),
             SizedBox(width: 20),
-            Text('Đang tạo thanh toán...'),
+            Text('Creating payment...'),
           ],
         ),
       ),
@@ -203,7 +203,7 @@ class PayPalService {
         backgroundColor: Colors.red,
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'Đóng',
+          label: 'Close',
           textColor: Colors.white,
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -236,7 +236,7 @@ class PayPalService {
         print('❌ Attempt $attempt failed: $e');
         if (attempt == maxRetries) {
           // Lần cuối cùng thất bại
-          _showErrorSnackBar(context, 'Không thể kết nối đến server sau $maxRetries lần thử. Vui lòng kiểm tra kết nối mạng.');
+          _showErrorSnackBar(context, 'Cannot connect to server after $maxRetries attempts. Please check your network connection.');
           rethrow;
         }
         // Chờ một chút trước khi thử lại
@@ -273,7 +273,7 @@ class PayPalService {
         'createdAt': FieldValue.serverTimestamp(),
         'orderId': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
         'code': 'OD-${DateTime.now().microsecondsSinceEpoch}',
-        'userId': userId, // Thêm userId vào order data
+        'userId': userId, // Add userId to order data
         'orderStatus': [
           {
             'title': 'Order Placed',
@@ -342,7 +342,7 @@ class PayPalService {
       currentOrderInfo = null;
     } catch (e) {
       print('❌ Error handling payment success: $e');
-      _showErrorSnackBar(context, 'Lỗi khi lưu đơn hàng: $e');
+              _showErrorSnackBar(context, 'Error saving order: $e');
     }
   }
 } 

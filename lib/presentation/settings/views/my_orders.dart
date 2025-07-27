@@ -147,7 +147,7 @@ class _MyOrdersContentState extends State<_MyOrdersContent> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => OrderDetailPage(
-                        orderEntity: orders[index],
+                      orderEntity: orders[index],
                       ),
                     ));
                 

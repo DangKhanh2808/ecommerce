@@ -41,7 +41,7 @@ class ProductOrderedModel {
       productImage: map['productImage']?.toString() ?? '',
       createdDate: map['createdDate']?.toString() ?? '',
       id: map['id']?.toString() ?? '',
-      code: map['code']?.toString() ?? '', // nếu bạn có thêm field code
+      code: map['code']?.toString() ?? '', // if you have additional code field
     );
   }
 

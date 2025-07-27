@@ -39,7 +39,7 @@ class ReviewFirebaseServiceImpl implements ReviewFirebaseService {
 
     return snapshot.docs.map((e) {
       final data = e.data();
-      data['reviewId'] = e.id; // Sử dụng document ID làm reviewId
+      data['reviewId'] = e.id; // Use document ID as reviewId
       return ReviewModel.fromMap(data);
     }).toList();
   }

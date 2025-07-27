@@ -94,7 +94,7 @@ class EnterPasswordPage extends StatelessWidget {
             if (signinReq.email == null || signinReq.email!.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Email không được để trống'),
+                  content: Text('Email cannot be empty'),
                 ),
               );
               return;

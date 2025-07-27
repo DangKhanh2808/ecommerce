@@ -11,4 +11,6 @@ abstract class AuthRepository {
   Future<Either> getUser();
   Future<Either> signOut();
   Future<String> getRole();
+  Future<Either> updateUser(Map<String, dynamic> userData);
+  Future<Either> changePassword(Map<String, dynamic> passwordData);
 }

@@ -2,6 +2,7 @@ import 'package:ecommerce/core/configs/theme/bloc/theme_cubit.dart';
 import 'package:ecommerce/presentation/auth/user/views/signin.dart';
 import 'package:ecommerce/presentation/settings/views/my_favorites.dart';
 import 'package:ecommerce/presentation/settings/views/my_orders.dart';
+import 'package:ecommerce/presentation/settings/views/profile_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/presentation/home/user/bloc/profile_cubit.dart';
@@ -97,6 +98,23 @@ class ProfilePage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (_) => const MyOrdersPage()),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.manage_accounts),
+                          title: const Text('Profile Management'),
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileManagementPage(
+                                  user: user,
+                                  onProfileUpdated: () {
+                                    context.read<ProfileCubit>().loadProfile();
+                                  },
+                                ),
+                              ),
                             );
                           },
                         ),

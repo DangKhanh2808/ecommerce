@@ -42,7 +42,7 @@ class ProductImagePicker extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: pickAndUploadImages,
           icon: const Icon(Icons.upload),
-          label: const Text('Chọn và tải ảnh'),
+          label: const Text('Select and upload image'),
         ),
         const SizedBox(height: 10),
         BlocBuilder<ImagePickerCubit, ImagePickerState>(
@@ -52,7 +52,7 @@ class ProductImagePicker extends StatelessWidget {
             }
 
             if (state.localImages.isEmpty) {
-              return const Text("Chưa có ảnh nào.");
+              return const Text("No images yet.");
             }
 
             return Wrap(

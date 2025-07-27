@@ -112,7 +112,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                     
                     // Tiêu đề
                     const Text(
-                      'Thanh toán thành công!',
+                      'Payment Successful!',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -125,7 +125,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                     
                     // Thông báo
                     const Text(
-                      'Đơn hàng của bạn đã được xử lý thành công.',
+                      'Your order has been processed successfully.',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -169,7 +169,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                       child: Column(
                         children: [
                           Text(
-                            'Số sản phẩm: ${widget.products.length}',
+                            'Number of products: ${widget.products.length}',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -177,7 +177,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Mã đơn hàng: ${DateTime.now().millisecondsSinceEpoch}',
+                            'Order ID: ${DateTime.now().millisecondsSinceEpoch}',
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
@@ -204,7 +204,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                           ),
                         ),
                         child: const Text(
-                          'Quay về trang chủ',
+                          'Back to Home',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -218,7 +218,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                     
                     // Thông báo tự động chuyển
                     const Text(
-                      'Tự động chuyển sau 5 giây...',
+                                              'Auto redirect in 5 seconds...',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey,

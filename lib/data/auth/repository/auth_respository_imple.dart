@@ -56,4 +56,14 @@ class AuthrepositoryImple extends AuthRepository {
   Future<String> getRole() async {
     return await sl<AuthFirebaseService>().getRole();
   }
+
+  @override
+  Future<Either> updateUser(Map<String, dynamic> userData) async {
+    return await sl<AuthFirebaseService>().updateUser(userData);
+  }
+
+  @override
+  Future<Either> changePassword(Map<String, dynamic> passwordData) async {
+    return await sl<AuthFirebaseService>().changePassword(passwordData);
+  }
 }

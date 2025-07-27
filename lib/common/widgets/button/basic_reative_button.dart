@@ -12,9 +12,9 @@ class BasicReactiveButton extends StatelessWidget {
   
   const BasicReactiveButton({
     required this.onPressed,
-    this.title = '',
-    this.height,
-    this.content,
+      this.title = '',
+      this.height,
+      this.content,
     this.isLoading = false,
     super.key,
   });
@@ -72,11 +72,11 @@ class BasicReactiveButtonWithBloc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ButtonStateCubit, ButtonState>(
-      builder: (context, state) {
-        if (state is ButtonLoadingState) {
-          return _loading();
-        }
-        return _initial();
+        builder: (context, state) {
+      if (state is ButtonLoadingState) {
+        return _loading();
+      }
+      return _initial();
       },
     );
   }
