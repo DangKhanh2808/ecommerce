@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/data/order/model/add_to_cart_req.dart';
 import 'package:ecommerce/data/order/model/order_registration_req.dart';
+import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class OrderFirebaseService {
@@ -10,6 +11,7 @@ abstract class OrderFirebaseService {
   Future<Either> removeCartProduct(String id);
   Future<Either> orderResitration(OrderRegistrationReq order);
   Future<Either> getOrders();
+  Future<Either> rebuyProduct(ProductOrderedEntity product);
 }
 
 class OrderFirebaseServiceImpl extends OrderFirebaseService {
@@ -110,6 +112,36 @@ class OrderFirebaseServiceImpl extends OrderFirebaseService {
       return Right(returnedData.docs.map((e) => e.data()).toList());
     } catch (e) {
       return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> rebuyProduct(ProductOrderedEntity product) async {
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+      
+      // Tạo AddToCartReq từ ProductOrderedEntity
+      final addToCartReq = {
+        'productId': product.productId,
+        'productTitle': product.productTitle,
+        'productQuantity': product.productQuantity,
+        'productColor': product.productColor,
+        'productSize': product.productSize,
+        'productPrice': product.productPrice,
+        'totalPrice': product.totalPrice,
+        'productImage': product.productImage,
+        'createdDate': DateTime.now().toIso8601String(),
+      };
+
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user?.uid)
+          .collection('Cart')
+          .add(addToCartReq);
+          
+      return Right('Product added to cart successfully');
+    } catch (e) {
+      return Left('Failed to add product to cart. Please try again.');
     }
   }
 }

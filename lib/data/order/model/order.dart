@@ -24,13 +24,14 @@ class OrderModel {
   factory OrderModel.fromMap(Map<String, dynamic> map) {
     return OrderModel(
       products: List<ProductOrderedModel>.from(
-        map['products'].map((product) => ProductOrderedModel.fromMap(product)),
+        (map['products'] as List<dynamic>? ?? [])
+            .map((product) => ProductOrderedModel.fromMap(product)),
       ),
-      createdDate: map['createdDate'] as String,
-      shippingAddress: map['shippingAddress'] as String,
-      itemCount: map['itemCount'] as int,
-      totalPrice: map['totalPrice'] as double,
-      code: map['code'] as String,
+      createdDate: map['createdDate']?.toString() ?? '',
+      shippingAddress: map['shippingAddress']?.toString() ?? '',
+      itemCount: map['itemCount'] as int? ?? 0,
+      totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0.0,
+      code: map['code']?.toString() ?? '',
       orderStatus: (map['orderStatus'] as List<dynamic>?)
               ?.map((status) => OrderStatusModel.fromMap(status))
               .toList() ??

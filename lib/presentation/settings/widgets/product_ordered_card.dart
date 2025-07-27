@@ -3,6 +3,7 @@ import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/configs/theme/app_colors.dart';
+import '../../../core/configs/theme/theme_helper.dart';
 
 class OrderItemsCard extends StatelessWidget {
   final ProductOrderedEntity productOrderedEntity;
@@ -14,102 +15,142 @@ class OrderItemsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          color: AppColors.secondBackground,
-          borderRadius: BorderRadius.circular(8)),
+      constraints: const BoxConstraints(minHeight: 120),
+      padding: const EdgeInsets.all(16),
+      decoration: ThemeHelper.getCardDecoration(context),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Product Image
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: ThemeHelper.getShadowColor(context),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(
+                  ImageDisplayHelper.generateProductImageURL(
+                    productOrderedEntity.productImage,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Product Details
           Expanded(
-            flex: 4,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    width: 90,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(
-                                ImageDisplayHelper.generateProductImageURL(
-                                    productOrderedEntity.productImage))),
-                        borderRadius: BorderRadius.circular(4)),
+                // Product Title
+                Text(
+                  productOrderedEntity.productTitle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: ThemeHelper.getTextPrimaryColor(context),
                   ),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        productOrderedEntity.productTitle,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 16),
+                const SizedBox(height: 8),
+                // Size and Color Tags
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      Row(
-                        children: [
-                          Text.rich(
-                              overflow: TextOverflow.ellipsis,
-                              TextSpan(
-                                  text: 'Size - ',
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10),
-                                  children: [
-                                    TextSpan(
-                                      text: productOrderedEntity.productSize,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10),
-                                    )
-                                  ])),
-                          const SizedBox(
-                            width: 10,
+                      child: Flexible(
+                        child: Text(
+                          'Size: ${productOrderedEntity.productSize}',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
                           ),
-                          Text.rich(
-                              overflow: TextOverflow.ellipsis,
-                              TextSpan(
-                                  text: 'Color - ',
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10),
-                                  children: [
-                                    TextSpan(
-                                      text: productOrderedEntity.productColor,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10),
-                                    )
-                                  ])),
-                        ],
-                      )
-                    ],
-                  ),
-                )
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Flexible(
+                        child: Text(
+                          'Color: ${productOrderedEntity.productColor}',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Quantity and Price Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Qty: ${productOrderedEntity.productQuantity}',
+                      style: TextStyle(
+                        color: ThemeHelper.getTextSecondaryColor(context),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '\$${productOrderedEntity.totalPrice}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: ThemeHelper.getTextPrimaryColor(context),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          'Price: \$${productOrderedEntity.productPrice}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 11,
+                            color: ThemeHelper.getTextSecondaryColor(context),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          Expanded(
-            child: Text(
-              '\$${productOrderedEntity.totalPrice}',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-          )
         ],
       ),
     );

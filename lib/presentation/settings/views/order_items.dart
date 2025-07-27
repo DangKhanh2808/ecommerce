@@ -3,6 +3,8 @@ import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:ecommerce/presentation/settings/widgets/product_ordered_card.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/configs/theme/theme_helper.dart';
+
 class OrderItemsPage extends StatelessWidget {
   final List<ProductOrderedEntity> products;
 
@@ -22,7 +24,10 @@ class OrderItemsPage extends StatelessWidget {
   }
 
   Widget _products(List<ProductOrderedEntity> products) {
-    return ListView.separated(
+    return Builder(
+      builder: (context) => Container(
+        color: ThemeHelper.getBackgroundColor(context),
+        child: ListView.separated(
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, index) {
         return OrderItemsCard(
@@ -30,9 +35,11 @@ class OrderItemsPage extends StatelessWidget {
         );
       },
       separatorBuilder: (context, index) => const SizedBox(
-        height: 10,
+            height: 12,
+          ),
+          itemCount: products.length,
+        ),
       ),
-      itemCount: products.length,
     );
   }
 }

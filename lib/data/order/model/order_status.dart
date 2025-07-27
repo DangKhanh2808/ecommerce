@@ -14,9 +14,9 @@ class OrderStatusModel {
 
   factory OrderStatusModel.fromMap(Map<String, dynamic> map) {
     return OrderStatusModel(
-      title: map['title'] as String,
-      done: map['done'] as bool,
-      createdDate: map['createdDate'] as Timestamp,
+      title: map['title']?.toString() ?? '',
+      done: map['done'] as bool? ?? false,
+      createdDate: map['createdDate'] as Timestamp? ?? Timestamp.now(),
     );
   }
 }

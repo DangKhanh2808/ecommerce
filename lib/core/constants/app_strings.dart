@@ -94,6 +94,16 @@ class AppStrings {
   static const String signUp = 'Sign Up';
   static const String email = 'Email';
   static const String password = 'Password';
+  
+  // Rebuy functionality
+  static const String rebuy = 'Rebuy';
+  static const String rebuyAll = 'Rebuy All';
+  static const String addingToCart = 'Adding...';
+  static const String productAddedToCart = 'Product added to cart successfully';
+  static const String allProductsAddedToCart = 'All products added to cart successfully!';
+  static const String someProductsAddedToCart = 'Some products added to cart successfully.';
+  static const String failedToAddToCart = 'Failed to add product to cart. Please try again.';
+  static const String failedToAddProductsToCart = 'Failed to add products to cart. Please try again.';
   static const String confirmPassword = 'Confirm Password';
   static const String firstName = 'First Name';
   static const String lastName = 'Last Name';

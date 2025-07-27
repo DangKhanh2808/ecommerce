@@ -4,6 +4,7 @@ import 'package:ecommerce/data/order/model/order.dart';
 import 'package:ecommerce/data/order/model/order_registration_req.dart';
 import 'package:ecommerce/data/order/model/product_ordered.dart';
 import 'package:ecommerce/data/order/source/order_firebase_service.dart';
+import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:ecommerce/domain/order/repository/order.dart';
 import 'package:ecommerce/service_locator.dart';
 
@@ -59,6 +60,19 @@ class OrderRepositoryImpl extends OrderRepository {
         return right(List.from(data)
             .map((e) => OrderModel.fromMap(e).toEntity())
             .toList());
+      },
+    );
+  }
+
+  @override
+  Future<Either> rebuyProduct(ProductOrderedEntity product) async {
+    var returnedData = await sl<OrderFirebaseService>().rebuyProduct(product);
+    return returnedData.fold(
+      (error) {
+        return Left(error);
+      },
+      (message) {
+        return Right(message);
       },
     );
   }
