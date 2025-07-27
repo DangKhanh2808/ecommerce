@@ -136,4 +136,13 @@ class ProductRepositoryImpl extends ProductRepository {
       ),
     );
   }
+
+  @override
+  Future<Either<String, List<ProductEntity>>> getRelatedProducts({required String categoryId, required String excludeProductId}) async {
+    var returnedData = await sl<ProductFirebaseService>().getRelatedProducts(categoryId: categoryId, excludeProductId: excludeProductId);
+    return returnedData.fold(
+      (error) => Left(error),
+      (data) => Right(List.from(data).map((e) => ProductModel.fromMap(e).toEntity()).toList()),
+    );
+  }
 }

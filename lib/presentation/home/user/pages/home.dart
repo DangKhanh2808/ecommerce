@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/presentation/settings/views/my_favorites.dart';
 import 'package:ecommerce/core/constants/app_strings.dart';
 import 'package:ecommerce/presentation/home/user/bloc/home_loading_cubit.dart';
+import 'package:ecommerce/presentation/home/user/bloc/profile_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,14 +26,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeContent(),
-    const AllProductsPage(),
-    const CartPage(),
-    const MyFavoritesPage(),
-    ProfilePage(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -41,8 +34,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      const HomeContent(),
+      const AllProductsPage(),
+      const CartPage(),
+      const MyFavoritesPage(),
+      BlocProvider(
+        create: (_) => ProfileCubit(authRepository: context.read())..loadProfile(),
+        child: const ProfilePage(),
+      ),
+    ];
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

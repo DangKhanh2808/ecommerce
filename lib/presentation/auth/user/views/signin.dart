@@ -14,58 +14,60 @@ class SigninPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Scaffold(
       appBar: const BasicAppbar(
         hideBack: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 40,
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 40,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _signinText(context),
-              const SizedBox(
-                height: 20,
-              ),
-              _emailField(context),
-              const SizedBox(
-                height: 20,
-              ),
-              _continueButton(context),
-              const SizedBox(
-                height: 20,
-              ),
-              _createAccount(context),
-            ],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _signinText(context, theme),
+                const SizedBox(height: 32),
+                _emailField(context, theme),
+                const SizedBox(height: 24),
+                _continueButton(context),
+                const SizedBox(height: 32),
+                Divider(height: 32, thickness: 1, color: isDark ? Colors.grey[700] : Colors.grey[300]),
+                const SizedBox(height: 16),
+                _createAccount(context, theme, isDark),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _signinText(BuildContext context) {
+  Widget _signinText(BuildContext context, ThemeData theme) {
     return Text(
       'Sign in',
-      style: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-      ),
+      style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
-  Widget _emailField(BuildContext context) {
+  Widget _emailField(BuildContext context, ThemeData theme) {
     return TextField(
       controller: _emailCon,
-      decoration: const InputDecoration(
+      style: theme.textTheme.bodyLarge,
+      decoration: InputDecoration(
         hintText: 'Email Address',
+        hintStyle: theme.textTheme.bodyLarge?.copyWith(color: theme.hintColor),
+        filled: true,
+        fillColor: theme.cardColor,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: theme.primaryColor, width: 2),
+        ),
+        prefixIcon: Icon(Icons.email, color: theme.iconTheme.color),
       ),
     );
   }
@@ -85,25 +87,29 @@ class SigninPage extends StatelessWidget {
     );
   }
 
-  Widget _createAccount(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(text: "Dont't you have an account ? "),
-          TextSpan(
-            text: 'Create one',
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                AppNavigator.push(
-                  context,
-                  SignupPage(),
-                );
-              },
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+  Widget _createAccount(BuildContext context, ThemeData theme, bool isDark) {
+    return Center(
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(text: "Don't have an account? ", style: theme.textTheme.bodyLarge?.copyWith(color: theme.textTheme.bodyLarge?.color)),
+            TextSpan(
+              text: 'Sign up',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  AppNavigator.push(
+                    context,
+                    SignupPage(),
+                  );
+                },
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.primaryColor,
+                decoration: TextDecoration.underline,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

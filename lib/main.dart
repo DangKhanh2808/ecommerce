@@ -9,6 +9,9 @@ import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/presentation/splash/bloc/splash_cubit.dart';
 import 'package:ecommerce/presentation/splash/views/splash.dart';
 import 'package:ecommerce/service_locator.dart';
+import 'package:ecommerce/domain/product/repository/product.dart';
+import 'package:ecommerce/data/product/repository/product.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +20,11 @@ Future<void> main() async {
   );
   await initializeDependencies();
   runApp(
-    RepositoryProvider<AuthRepository>(
-      create: (_) => sl<AuthRepository>(), // ✅ cung cấp auth repository
+    MultiProvider(
+      providers: [
+        Provider<AuthRepository>(create: (_) => sl<AuthRepository>()),
+        Provider<ProductRepository>(create: (_) => ProductRepositoryImpl()),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => ThemeCubit()),

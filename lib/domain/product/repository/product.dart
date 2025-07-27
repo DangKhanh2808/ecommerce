@@ -12,4 +12,5 @@ abstract class ProductRepository {
   Future<Either> createProduct(ProductEntity product);
   Future<Either> updateProduct(ProductEntity product);
   Future<Either> deleteProduct(String productId);
+  Future<Either<String, List<ProductEntity>>> getRelatedProducts({required String categoryId, required String excludeProductId});
 }

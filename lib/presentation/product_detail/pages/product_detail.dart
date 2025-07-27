@@ -16,6 +16,7 @@ import 'package:ecommerce/presentation/product_detail/widgets/product_title.dart
 import 'package:ecommerce/presentation/product_detail/widgets/review_section.dart';
 import 'package:ecommerce/presentation/product_detail/widgets/selected_color.dart';
 import 'package:ecommerce/presentation/product_detail/widgets/selected_size.dart';
+import 'package:ecommerce/presentation/product_detail/widgets/related_products_section.dart';
 import 'package:ecommerce/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,6 +99,10 @@ class ProductDetailPage extends StatelessWidget {
                         productId: productEntity.productId,
                         userId: user.userId,
                         userName: '${user.firstName} ${user.lastName}',
+                      ),
+                      RelatedProductsSection(
+                        categoryId: productEntity.categoryId,
+                        excludeProductId: productEntity.productId,
                       ),
                     ],
                   ),

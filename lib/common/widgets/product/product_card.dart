@@ -5,6 +5,10 @@ import 'package:ecommerce/presentation/product_detail/pages/product_detail.dart'
 import 'package:flutter/material.dart';
 
 import '../../../core/configs/theme/app_colors.dart';
+import 'package:ecommerce/domain/product/usecases/get_related_products.dart';
+import 'package:ecommerce/data/product/repository/product.dart';
+import 'package:ecommerce/domain/product/repository/product.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductEntity productEntity;
@@ -18,9 +22,15 @@ class ProductCard extends StatelessWidget {
       onTap: () {
         AppNavigator.push(
             context,
-            ProductDetailPage(
-              productEntity: productEntity,
-            ));
+            Provider<GetRelatedProductsUseCase>(
+              create: (_) => GetRelatedProductsUseCase(
+                Provider.of<ProductRepository>(context, listen: false),
+              ),
+              child: ProductDetailPage(
+                productEntity: productEntity,
+              ),
+            ),
+        );
       },
       child: Card(
         elevation: 4,
