@@ -3,6 +3,7 @@ import 'package:ecommerce/data/product/models/color.dart';
 import 'package:ecommerce/domain/product/entity/product.dart';
 
 class ProductModel {
+  final String docId; // Firestore document id
   final String categoryId;
   final List<ProductColorModel> colors;
   final Timestamp createdDate;
@@ -16,6 +17,7 @@ class ProductModel {
   final String title;
 
   const ProductModel({
+    required this.docId,
     required this.categoryId,
     this.colors = const [],
     required this.createdDate,
@@ -29,21 +31,48 @@ class ProductModel {
     required this.title,
   });
 
-  factory ProductModel.fromMap(Map<String, dynamic> map) {
+  factory ProductModel.fromMap(Map<String, dynamic> map, String docId) {
+    // Defensive: ensure all fields are present and correct type
+    List<ProductColorModel> safeColors = [];
+    try {
+      if (map['colors'] is List) {
+        safeColors = (map['colors'] as List)
+            .where((e) => e != null)
+            .map((e) => ProductColorModel.fromMap(e ?? {}))
+            .toList();
+      }
+    } catch (_) {
+      safeColors = [];
+    }
+    List<String> safeImages = [];
+    try {
+      if (map['images'] is List) {
+        safeImages = List<String>.from(map['images'].whereType<String>());
+      }
+    } catch (_) {
+      safeImages = [];
+    }
+    List<String> safeSizes = [];
+    try {
+      if (map['sizes'] is List) {
+        safeSizes = List<String>.from(map['sizes'].map((e) => e.toString()));
+      }
+    } catch (_) {
+      safeSizes = ['35', '37', '40', '42'];
+    }
     return ProductModel(
-      categoryId: map['categoryId'] ?? '',
-      colors: (map['colors'] as List<dynamic>? ?? [])
-          .map((e) => ProductColorModel.fromMap(e))
-          .toList(),
+      docId: docId,
+      categoryId: map['categoryId']?.toString() ?? '',
+      colors: safeColors,
       createdDate: map['createdDate'] ?? Timestamp.now(),
-      discountedPrice: map['discountedPrice'] ?? 0,
-      gender: map['gender'] ?? 0,
-      images: List<String>.from(map['images'] ?? []),
-      price: map['price'] ?? 0,
-      productId: map['productId'] ?? '',
-      salesNumber: map['salesNumber'] ?? 0,
-      sizes: List<String>.from(map['sizes'] ?? [35, 37, 40, 42]),
-      title: map['title'] ?? '',
+      discountedPrice: num.tryParse(map['discountedPrice']?.toString() ?? '0') ?? 0,
+      gender: int.tryParse(map['gender']?.toString() ?? '0') ?? 0,
+      images: safeImages,
+      price: num.tryParse(map['price']?.toString() ?? '0') ?? 0,
+      productId: map['productId']?.toString() ?? '',
+      salesNumber: int.tryParse(map['salesNumber']?.toString() ?? '0') ?? 0,
+      sizes: safeSizes,
+      title: map['title']?.toString() ?? '',
     );
   }
 
@@ -64,6 +93,7 @@ class ProductModel {
   }
 
   ProductModel copyWith({
+    String? docId,
     String? categoryId,
     List<ProductColorModel>? colors,
     Timestamp? createdDate,
@@ -77,6 +107,7 @@ class ProductModel {
     String? title,
   }) {
     return ProductModel(
+      docId: docId ?? this.docId,
       categoryId: categoryId ?? this.categoryId,
       colors: colors ?? this.colors,
       createdDate: createdDate ?? this.createdDate,
@@ -95,6 +126,7 @@ class ProductModel {
 extension ProductXModel on ProductModel {
   ProductEntity toEntity() {
     return ProductEntity(
+      docId: docId,
       categoryId: categoryId,
       colors: colors.map((e) => e.toEntity()).toList(),
       createdDate: createdDate,
@@ -113,6 +145,7 @@ extension ProductXModel on ProductModel {
 extension ProductXEntity on ProductEntity {
   ProductModel fromEntity() {
     return ProductModel(
+      docId: docId,
       categoryId: categoryId,
       colors: colors.map((e) => e.fromEntity()).toList(),
       createdDate: createdDate,

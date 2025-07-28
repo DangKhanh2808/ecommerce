@@ -66,6 +66,7 @@ class _EditProductPageState extends State<EditProductPage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         final updatedProduct = ProductEntity(
+                          docId: widget.product.docId,
                           productId: widget.product.productId,
                           title: _titleController.text,
                           price: num.tryParse(_priceController.text) ?? 0,

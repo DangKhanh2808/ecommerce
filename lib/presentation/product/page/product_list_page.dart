@@ -23,52 +23,55 @@ class ProductListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProductUpdateCubit(sl<UpdateProductUseCase>()),
-      child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Product List'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    final productRepo = GetIt.I<ProductRepository>();
-                    final categoryRepo = GetIt.I<CategoryRepository>();
-                    final storageRepo = GetIt.I<StorageRepository>();
+    return BlocProvider<ProductsDisplayCubit>.value(
+      value: context.read<ProductsDisplayCubit>(),
+      child: BlocProvider(
+        create: (_) => ProductUpdateCubit(sl<UpdateProductUseCase>()),
+        child: BlocBuilder<ProductsDisplayCubit, ProductsDisplayState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Product List'),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      final productRepo = GetIt.I<ProductRepository>();
+                      final categoryRepo = GetIt.I<CategoryRepository>();
+                      final storageRepo = GetIt.I<StorageRepository>();
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (_) => ProductAddCubit(productRepo),
-                            ),
-                            BlocProvider(
-                              create: (_) => CategoryCubit(categoryRepo)
-                                ..fetchCategories(),
-                            ),
-                            BlocProvider(
-                              create: (_) => ImagePickerCubit(storageRepo),
-                            ),
-                          ],
-                          child: const ProductAddPage(),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (_) => ProductAddCubit(productRepo),
+                              ),
+                              BlocProvider(
+                                create: (_) => CategoryCubit(categoryRepo)
+                                  ..fetchCategories(),
+                              ),
+                              BlocProvider(
+                                create: (_) => ImagePickerCubit(storageRepo),
+                              ),
+                            ],
+                            child: const ProductAddPage(),
+                          ),
                         ),
-                      ),
-                    ).then((result) {
-                      if (result == true) {
-                        context.read<ProductsDisplayCubit>().displayProducts();
-                      }
-                    });
-                  },
-                )
-              ],
-            ),
-            body: _buildBody(context, state),
-          );
-        },
+                      ).then((result) {
+                        if (result == true) {
+                          context.read<ProductsDisplayCubit>().displayProducts();
+                        }
+                      });
+                    },
+                  )
+                ],
+              ),
+              body: _buildBody(context, state),
+            );
+          },
+        ),
       ),
     );
   }
@@ -116,6 +119,8 @@ class ProductListPage extends StatelessWidget {
   }
 
   void _deleteProduct(BuildContext context, dynamic product) {
+    // Lấy instance cubit trước khi showDialog
+    final productsCubit = context.read<ProductsDisplayCubit>();
     // Show confirmation dialog
     showDialog(
       context: context,
@@ -131,6 +136,10 @@ class ProductListPage extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               // Delete product logic here
+              final deleteCubit = ProductDeleteCubit(sl<ProductRepository>());
+              deleteCubit.deleteProduct(product.docId);
+              // Sau khi xóa, reload danh sách
+              productsCubit.displayProducts();
             },
             child: const Text('Delete'),
           ),

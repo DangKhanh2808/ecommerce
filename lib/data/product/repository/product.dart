@@ -15,7 +15,13 @@ class ProductRepositoryImpl extends ProductRepository {
       },
       (data) {
         return right(List.from(data)
-            .map((e) => ProductModel.fromMap(e).toEntity())
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
             .toList());
       },
     );
@@ -30,7 +36,13 @@ class ProductRepositoryImpl extends ProductRepository {
       },
       (data) {
         return right(List.from(data)
-            .map((e) => ProductModel.fromMap(e).toEntity())
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
             .toList());
       },
     );
@@ -38,15 +50,21 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Either> getProductsByCategoryId(String categoryId) async {
-    var returnedData =
-        await sl<ProductFirebaseService>().getProductsByCategoryId(categoryId);
+    var returnedData = await sl<ProductFirebaseService>().getProductsByCategoryId(categoryId);
     return returnedData.fold(
       (error) {
         return Left(error);
       },
       (data) {
+        // data là List<QueryDocumentSnapshot>
         return right(List.from(data)
-            .map((e) => ProductModel.fromMap(e).toEntity())
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
             .toList());
       },
     );
@@ -54,15 +72,20 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Either> getProductsByTitle(String title) async {
-    var returnedData =
-        await sl<ProductFirebaseService>().getProductsByTitle(title);
+    var returnedData = await sl<ProductFirebaseService>().getProductsByTitle(title);
     return returnedData.fold(
       (error) {
         return Left(error);
       },
       (data) {
         return right(List.from(data)
-            .map((e) => ProductModel.fromMap(e).toEntity())
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
             .toList());
       },
     );
@@ -96,7 +119,13 @@ class ProductRepositoryImpl extends ProductRepository {
       },
       (data) {
         return right(List.from(data)
-            .map((e) => ProductModel.fromMap(e).toEntity())
+            .map((e) {
+              if (e is Map<String, dynamic>) {
+                return ProductModel.fromMap(e, e['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(e.data(), e.id).toEntity();
+              }
+            })
             .toList());
       },
     );
@@ -141,8 +170,41 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Either<String, List<ProductEntity>>> getRelatedProducts({required String categoryId, required String excludeProductId}) async {
     var returnedData = await sl<ProductFirebaseService>().getRelatedProducts(categoryId: categoryId, excludeProductId: excludeProductId);
     return returnedData.fold(
-      (error) => Left(error),
-      (data) => Right(List.from(data).map((e) => ProductModel.fromMap(e).toEntity()).toList()),
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        return right(List.from(data)
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
+            .toList());
+      },
+    );
+  }
+
+  @override
+  Future<Either> getAllProducts() async {
+    var returnedData = await sl<ProductFirebaseService>().getAllProducts();
+    return returnedData.fold(
+      (error) {
+        return Left(error);
+      },
+      (data) {
+        return right(List.from(data)
+            .map((doc) {
+              if (doc is Map<String, dynamic>) {
+                return ProductModel.fromMap(doc, doc['docId'] ?? '').toEntity();
+              } else {
+                return ProductModel.fromMap(doc.data(), doc.id).toEntity();
+              }
+            })
+            .toList());
+      },
     );
   }
 }

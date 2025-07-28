@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/configs/theme/app_colors.dart';
 import 'package:ecommerce/domain/product/usecases/get_related_products.dart';
-import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
 import 'package:provider/provider.dart';
 

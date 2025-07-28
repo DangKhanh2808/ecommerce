@@ -1,7 +1,7 @@
 import 'package:ecommerce/common/bloc/product/product_display_cubit.dart';
 import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
-import 'package:ecommerce/domain/product/usecases/get_new_in.dart';
+import 'package:ecommerce/domain/product/usecases/get_all_products.dart';
 import 'package:ecommerce/presentation/home/widgets/categories.dart';
 import 'package:ecommerce/presentation/home/widgets/header.dart';
 import 'package:ecommerce/presentation/home/widgets/search_field.dart';
@@ -35,7 +35,7 @@ class AdminHomePage extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ProductsDisplayCubit(
-              useCase: sl<GetNewInUseCase>(),
+              useCase: sl<GetAllProductsUseCase>(),
             )..displayProducts(),
           ),
         ],
@@ -109,20 +109,17 @@ class AdminHomePage extends StatelessWidget {
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Header(),
-                const SizedBox(height: 24),
-                const SearchField(),
-                const SizedBox(height: 24),
-                const Categories(),
-                const SizedBox(
-                  height: 600,
-                  child: ProductListPage(), // ✅ Không cần Provider nữa
-                ),
-              ],
-            ),
+          body: Column(
+            children: [
+              const Header(),
+              const SizedBox(height: 24),
+              const SearchField(),
+              const SizedBox(height: 24),
+              const Categories(),
+              Expanded(
+                child: ProductListPage(),
+              ),
+            ],
           ),
         ),
       ),

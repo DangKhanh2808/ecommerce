@@ -35,11 +35,11 @@ class ProductSubmitButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: () async {
             if (formKey.currentState!.validate()) {
-              await imagePickerCubit.uploadImagesToFirebase();
-
+              // KHÔNG gọi uploadImagesToFirebase ở đây nữa!
               final imageUrls = imagePickerCubit.state.imageUrls;
 
               final product = ProductEntity(
+                docId: '', // <-- add this line for new product
                 productId: '',
                 title: titleController.text,
                 price: num.tryParse(priceController.text) ?? 0,

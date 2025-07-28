@@ -16,6 +16,7 @@ abstract class ProductFirebaseService {
   Future<Either> deleteProduct(String productId);
   Future<Either> updateProduct(ProductEntity product);
   Future<Either> getRelatedProducts({required String categoryId, required String excludeProductId});
+  Future<Either> getAllProducts();
 }
 
 class ProductFirebaseServiceImpl implements ProductFirebaseService {
@@ -194,6 +195,22 @@ class ProductFirebaseServiceImpl implements ProductFirebaseService {
           .map((e) => e.data())
           .toList();
       return Right(filtered);
+    } catch (e) {
+      return Left('Please try again');
+    }
+  }
+
+  @override
+  Future<Either> getAllProducts() async {
+    try {
+      var returnedData = await FirebaseFirestore.instance
+          .collection('Products')
+          .get();
+      return Right(returnedData.docs.map((e) {
+        final map = e.data();
+        map['docId'] = e.id;
+        return map;
+      }).toList());
     } catch (e) {
       return Left('Please try again');
     }

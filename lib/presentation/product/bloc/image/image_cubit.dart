@@ -8,7 +8,11 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
 
   ImagePickerCubit(this._storageRepository) : super(const ImagePickerState());
 
-  void setLoading(bool value) => emit(state.copyWith(loading: value));
+  void setLoading(bool value) {
+    if (!isClosed) {
+      emit(state.copyWith(loading: value));
+    }
+  }
 
   void addImage(File image, String uploadedUrl) {
     final updatedImages = List<File>.from(state.localImages)..add(image);
@@ -23,18 +27,24 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   }
 
   void clearImages() {
-    emit(const ImagePickerState());
+    if (!isClosed) {
+      emit(const ImagePickerState());
+    }
   }
 
   void removeImage(File image) {
     final updatedImages = List<File>.from(state.localImages)..remove(image);
     // Nếu muốn xóa cả imageUrls tương ứng, cần mapping, ở đây chỉ xóa ảnh local
-    emit(state.copyWith(localImages: updatedImages));
+    if (!isClosed) {
+      emit(state.copyWith(localImages: updatedImages));
+    }
   }
 
   /// ✅ Upload all local images to Firebase and update imageUrls
   Future<void> uploadImagesToFirebase() async {
-    emit(state.copyWith(loading: true));
+    if (!isClosed) {
+      emit(state.copyWith(loading: true));
+    }
 
     final uploadedUrls = <String>[];
 
@@ -46,15 +56,19 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
         uploadedUrls.add(url);
       } else {
         // Handle error if upload fails
-        print('Failed to upload image: ${image.path}');
-        emit(state.copyWith(loading: false));
+        print('Failed to upload image:  [image.path]');
+        if (!isClosed) {
+          emit(state.copyWith(loading: false));
+        }
         return;
       }
     }
 
-    emit(state.copyWith(
-      imageUrls: uploadedUrls,
-      loading: false,
-    ));
+    if (!isClosed) {
+      emit(state.copyWith(
+        imageUrls: uploadedUrls,
+        loading: false,
+      ));
+    }
   }
 }

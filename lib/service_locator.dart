@@ -63,6 +63,7 @@ import 'package:ecommerce/domain/order/repository/payment_method_repository.dart
 import 'package:ecommerce/domain/order/usecases/get_payment_methods.dart';
 import 'package:ecommerce/domain/order/usecases/add_payment_method.dart';
 import 'package:ecommerce/domain/order/usecases/delete_payment_method.dart';
+import 'package:ecommerce/domain/product/usecases/get_all_products.dart';
 
 final sl = GetIt.instance;
 
@@ -262,4 +263,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetPaymentMethodsUseCase>(GetPaymentMethodsUseCase(sl<PaymentMethodRepository>()));
   sl.registerSingleton<AddPaymentMethodUseCase>(AddPaymentMethodUseCase(sl<PaymentMethodRepository>()));
   sl.registerSingleton<DeletePaymentMethodUseCase>(DeletePaymentMethodUseCase(sl<PaymentMethodRepository>()));
+
+  sl.registerLazySingleton<GetAllProductsUseCase>(
+    () => GetAllProductsUseCase(sl<ProductRepository>()),
+  );
 }
