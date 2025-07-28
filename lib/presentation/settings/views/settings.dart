@@ -13,6 +13,9 @@ import 'package:ecommerce/presentation/settings/widgets/signout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/service_locator.dart';
+import 'package:ecommerce/presentation/settings/views/address_list_page.dart';
+import 'package:ecommerce/presentation/settings/views/payment_method_list_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -20,7 +23,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+    final String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return Scaffold(
       appBar: const BasicAppbar(
         title: Text('Settings'),
@@ -74,6 +77,33 @@ class SettingsPage extends StatelessWidget {
                 const MyFavortiesTile(),
                 const SizedBox(height: 12),
                 const MyOrdersTile(),
+                const SizedBox(height: 12),
+                // Bổ sung quản lý địa chỉ giao hàng
+                ListTile(
+                  leading: const Icon(Icons.location_on_outlined),
+                  title: const Text('Quản lý địa chỉ giao hàng'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AddressListPage(userId: userId),
+                      ),
+                    );
+                  },
+                ),
+                // Bổ sung quản lý phương thức thanh toán
+                ListTile(
+                  leading: const Icon(Icons.credit_card_outlined),
+                  title: const Text('Quản lý phương thức thanh toán'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaymentMethodListPage(userId: userId),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 12),
                 SignOutButton(),
               ],

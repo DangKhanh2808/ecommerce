@@ -6,6 +6,9 @@ import 'package:ecommerce/presentation/settings/views/privacy_settings.dart';
 import 'package:ecommerce/presentation/home/user/bloc/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ecommerce/presentation/settings/views/address_list_page.dart';
+import 'package:ecommerce/presentation/settings/views/payment_method_list_page.dart';
 
 class ProfileManagementPage extends StatefulWidget {
   final UserEntity user;
@@ -301,6 +304,60 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const PrivacySettingsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 1),
+                  // Add Manage Shipping Addresses
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.purple.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.location_on_outlined,
+                        color: Colors.purple,
+                      ),
+                    ),
+                    title: const Text('Manage Shipping Addresses'),
+                    subtitle: const Text('Add, edit, or remove your shipping addresses'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddressListPage(userId: userId),
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 1),
+                  // Add Manage Payment Methods
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.credit_card_outlined,
+                        color: Colors.teal,
+                      ),
+                    ),
+                    title: const Text('Manage Payment Methods'),
+                    subtitle: const Text('Add or remove your payment methods'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PaymentMethodListPage(userId: userId),
                         ),
                       );
                     },

@@ -10,6 +10,10 @@ import 'package:ecommerce/data/product/repository/review.dart';
 import 'package:ecommerce/data/product/source/product_firebase_service.dart';
 import 'package:ecommerce/data/product/source/review_firebase_service.dart';
 import 'package:ecommerce/data/storage/repository/storage.dart';
+import 'package:ecommerce/data/order/source/address_firebase_service.dart';
+import 'package:ecommerce/data/order/repository/address_repository_impl.dart';
+import 'package:ecommerce/data/order/source/payment_method_firebase_service.dart';
+import 'package:ecommerce/data/order/repository/payment_method_repository_impl.dart';
 import 'package:ecommerce/domain/auth/repository/auth.dart';
 import 'package:ecommerce/domain/auth/usecases/get_ages.dart';
 import 'package:ecommerce/domain/auth/usecases/get_role.dart';
@@ -50,6 +54,15 @@ import 'package:ecommerce/domain/storage/usecase/upload_product_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
+import 'package:ecommerce/domain/order/repository/address_repository.dart';
+import 'package:ecommerce/domain/order/usecases/get_addresses.dart';
+import 'package:ecommerce/domain/order/usecases/add_address.dart';
+import 'package:ecommerce/domain/order/usecases/update_address.dart';
+import 'package:ecommerce/domain/order/usecases/delete_address.dart';
+import 'package:ecommerce/domain/order/repository/payment_method_repository.dart';
+import 'package:ecommerce/domain/order/usecases/get_payment_methods.dart';
+import 'package:ecommerce/domain/order/usecases/add_payment_method.dart';
+import 'package:ecommerce/domain/order/usecases/delete_payment_method.dart';
 
 final sl = GetIt.instance;
 
@@ -234,4 +247,19 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<ChangePasswordUseCase>(
     ChangePasswordUseCase(sl<AuthRepository>()),
   );
+
+  // Đăng ký Address
+  sl.registerSingleton<AddressFirebaseService>(AddressFirebaseService());
+  sl.registerSingleton<AddressRepository>(AddressRepositoryImpl(sl<AddressFirebaseService>()));
+  sl.registerSingleton<GetAddressesUseCase>(GetAddressesUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<AddAddressUseCase>(AddAddressUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<UpdateAddressUseCase>(UpdateAddressUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<DeleteAddressUseCase>(DeleteAddressUseCase(sl<AddressRepository>()));
+
+  // Đăng ký PaymentMethod
+  sl.registerSingleton<PaymentMethodFirebaseService>(PaymentMethodFirebaseService());
+  sl.registerSingleton<PaymentMethodRepository>(PaymentMethodRepositoryImpl(sl<PaymentMethodFirebaseService>()));
+  sl.registerSingleton<GetPaymentMethodsUseCase>(GetPaymentMethodsUseCase(sl<PaymentMethodRepository>()));
+  sl.registerSingleton<AddPaymentMethodUseCase>(AddPaymentMethodUseCase(sl<PaymentMethodRepository>()));
+  sl.registerSingleton<DeletePaymentMethodUseCase>(DeletePaymentMethodUseCase(sl<PaymentMethodRepository>()));
 }
