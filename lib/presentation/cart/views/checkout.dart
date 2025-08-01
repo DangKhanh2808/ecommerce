@@ -3,7 +3,7 @@ import 'package:ecommerce/common/helper/navigator/app_navigator.dart';
 import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 import 'package:ecommerce/presentation/cart/views/cart.dart';
 import 'package:ecommerce/presentation/cart/views/order_placed.dart';
-import 'package:ecommerce/presentation/cart/views/payment_success.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce/common/bloc/button/button_state.dart';
@@ -211,19 +211,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      product.productImage,
+                                    child: Container(
                                       width: 50,
                                       height: 50,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
-                                          width: 50,
-                                          height: 50,
-                                          color: Colors.grey[300],
-                                          child: const Icon(Icons.image, color: Colors.grey),
-                                        );
-                                      },
+                                      color: Colors.blueGrey.shade100,
+                                      child: const Icon(Icons.image, color: Colors.blueGrey, size: 32),
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -475,32 +467,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
       final tax = 0.0;
       final total = subtotal + shipping + tax;
       
-      // Lưu thông tin đơn hàng hiện tại
-      PayPalService.currentOrderInfo = {
-        'total': total,
-        'products': widget.products,
-        'shippingAddress': _addressController.text.isNotEmpty 
+      // Sử dụng method mới với xác nhận đơn hàng
+      await PayPalService.createPaymentWithConfirmation(
+        total: total,
+        context: context,
+        products: widget.products,
+        shippingAddress: _addressController.text.isNotEmpty 
             ? _addressController.text 
             : 'Default Address',
-      };
-      
-      // Tạo thanh toán PayPal
-      await PayPalService.createPayment(total, context);
+      );
       print('✅ PayPal payment created successfully');
-      
-      // Sau khi tạo thanh toán PayPal, đặt hàng
-      if (mounted) {
-        setState(() {
-          _pendingOrderTotal = total;
-        });
-      }
       
     } catch (e) {
       print('❌ PayPal payment error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-                            content: Text('Error creating PayPal payment: $e'),
+            content: Text('Error creating PayPal payment: $e'),
             backgroundColor: Colors.red,
           ),
         );

@@ -88,8 +88,8 @@ app.post('/create-payment', async (req, res) => {
         description: 'E-commerce Order'
       }],
               application_context: {
-          return_url: `http://172.20.10.9:${PORT}/paypal-success?total=${total}`,
-          cancel_url: `http://172.20.10.9:${PORT}/paypal-cancel`,
+          return_url: `http://192.168.36.155:${PORT}/paypal-success?total=${total}`,
+          cancel_url: `http://192.168.36.155:${PORT}/paypal-cancel`,
           brand_name: 'E-commerce Store',
           landing_page: 'LOGIN',
           user_action: 'PAY_NOW'

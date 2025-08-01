@@ -11,23 +11,23 @@ class ProductImages extends StatelessWidget {
     return SizedBox(
       height: 300,
       child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 200,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(
-                          ImageDisplayHelper.generateProductImageURL(
-                              productEntity.images[index])))),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(
-                width: 10,
-              ),
-          itemCount: productEntity.images.length),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Container(
+            width: 200,
+            decoration: BoxDecoration(
+              color: Colors.blueGrey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: Icon(Icons.image, color: Colors.blueGrey, size: 80),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 10),
+        itemCount: productEntity.images.length,
+      ),
     );
   }
 }

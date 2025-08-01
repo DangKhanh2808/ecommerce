@@ -39,6 +39,24 @@ class GenderAndAgeSelectionPage extends StatelessWidget {
               );
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
             }
+            if (state is ButtonSuccessState) {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Đăng ký thành công!'),
+                  content: const Text('Tài khoản của bạn đã được tạo thành công.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(); // Quay về màn hình trước hoặc home
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
           child: Column(
             children: [

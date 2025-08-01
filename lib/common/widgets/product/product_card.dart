@@ -67,11 +67,13 @@ class ProductCard extends StatelessWidget {
                         ),
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(
-                            ImageDisplayHelper.generateProductImageURL(
-                              productEntity.images[0],
-                            ),
-                          ),
+                          image: productEntity.images.isNotEmpty
+                              ? NetworkImage(
+                                  ImageDisplayHelper.generateProductImageURL(
+                                    productEntity.images[0],
+                                  ),
+                                )
+                              : const AssetImage('assets/images/not_found.png') as ImageProvider,
                         ),
                       ),
                     ),

@@ -115,23 +115,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
         result.fold(
           (error) {
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Error: $error'),
-                  backgroundColor: Colors.red,
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Cập nhật thất bại'),
+                  content: Text(error.toString()),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
               );
             }
           },
           (success) {
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Profile updated successfully!'),
-                  backgroundColor: Colors.green,
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Cập nhật thành công!'),
+                  content: const Text('Thông tin cá nhân đã được cập nhật.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
               );
-              Navigator.pop(context, true);
             }
           },
         );
