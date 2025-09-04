@@ -48,7 +48,12 @@ class ProductDetailPage extends StatelessWidget {
         BlocProvider(create: (_) => ButtonStateCubit()),
       ],
       child: Scaffold(
-        appBar: AppBar(title: const Text('Product Detail')),
+        appBar: AppBar(
+          title: const Text('Product Detail'),
+          actions: [
+            FavoriteButton(productEntity: productEntity),
+          ],
+        ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(

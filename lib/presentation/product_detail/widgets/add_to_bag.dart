@@ -37,55 +37,55 @@ class AddToBag extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: BasicReactiveButton(
-            onPressed: () {
-              context.read<ButtonStateCubit>().execute(
-                  usecase: sl<AddToCartUseCase>(),
-                  params: AddToCartReq(
-                    productId: productEntity.productId,
-                    productTitle: productEntity.title,
-                    productQuantity: context.read<ProductQuantityCubit>().state,
-                    productColor: productEntity
-                        .colors[context
-                            .read<ProductColorSelectionCubit>()
-                            .selectdIndex]
-                        .title,
-                    productSize: productEntity.sizes[context
-                        .read<ProductSizeSelectionCubit>()
-                        .selectedIndex],
-                    productPrice: productEntity.price.toDouble(),
-                    totalPrice:
-                        ProductPriceHelper.provideCurrentPrice(productEntity) *
-                            context.read<ProductQuantityCubit>().state,
-                    productImage: productEntity.images[0],
-                    createdDate: DateTime.now().toString(),
-                  ));
-            },
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BlocBuilder<ProductQuantityCubit, int>(
-                  builder: (context, state) {
-                    var price =
-                        ProductPriceHelper.provideCurrentPrice(productEntity) *
-                            state;
-                    return Text(
-                      "\$${price.toString()}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 14),
-                    );
-                  },
-                ),
-                const Text(
-                  'Add to Bag',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 14),
-                ),
-              ],
-            )),
+          onPressed: () {
+            context.read<ButtonStateCubit>().execute(
+                usecase: sl<AddToCartUseCase>(),
+                params: AddToCartReq(
+                  productId: productEntity.productId,
+                  productTitle: productEntity.title,
+                  productQuantity: context.read<ProductQuantityCubit>().state,
+                  productColor: productEntity
+                      .colors[context
+                          .read<ProductColorSelectionCubit>()
+                          .selectdIndex]
+                      .title,
+                  productSize: productEntity.sizes[
+                      context.read<ProductSizeSelectionCubit>().selectedIndex],
+                  productPrice: productEntity.price.toDouble(),
+                  totalPrice:
+                      ProductPriceHelper.provideCurrentPrice(productEntity) *
+                          context.read<ProductQuantityCubit>().state,
+                  productImage: productEntity.images[0],
+                  createdDate: DateTime.now().toString(),
+                ));
+          },
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              BlocBuilder<ProductQuantityCubit, int>(
+                builder: (context, state) {
+                  var price =
+                      ProductPriceHelper.provideCurrentPrice(productEntity) *
+                          state;
+                  return Text(
+                    "\$${price.toString()}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 14),
+                  );
+                },
+              ),
+              const Text(
+                'Add to Bag',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    fontSize: 14),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

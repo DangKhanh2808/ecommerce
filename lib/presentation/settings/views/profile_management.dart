@@ -13,9 +13,9 @@ import 'package:ecommerce/presentation/settings/views/payment_method_list_page.d
 class ProfileManagementPage extends StatefulWidget {
   final UserEntity user;
   final VoidCallback? onProfileUpdated;
-  
+
   const ProfileManagementPage({
-    super.key, 
+    super.key,
     required this.user,
     this.onProfileUpdated,
   });
@@ -25,11 +25,10 @@ class ProfileManagementPage extends StatefulWidget {
 }
 
 class _ProfileManagementPageState extends State<ProfileManagementPage> {
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: const BasicAppbar(
         title: Text('Profile Management'),
@@ -49,7 +48,8 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                       radius: 40,
                       backgroundImage: widget.user.image.isNotEmpty
                           ? NetworkImage(widget.user.image)
-                          : const AssetImage('assets/images/profile.png') as ImageProvider,
+                          : const AssetImage('assets/images/profile.png')
+                              as ImageProvider,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -94,9 +94,9 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Account Information
             Text(
               'Account Information',
@@ -105,7 +105,7 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Card(
               child: Column(
                 children: [
@@ -122,7 +122,8 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                       ),
                     ),
                     title: const Text('Full Name'),
-                    subtitle: Text('${widget.user.firstName} ${widget.user.lastName}'),
+                    subtitle: Text(
+                        '${widget.user.firstName} ${widget.user.lastName}'),
                   ),
                   const Divider(height: 1),
                   ListTile(
@@ -207,9 +208,9 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Management Options
             Text(
               'Management Options',
@@ -218,7 +219,7 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Card(
               child: Column(
                 children: [
@@ -241,7 +242,8 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                       final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditProfilePage(user: widget.user),
+                          builder: (context) =>
+                              EditProfilePage(user: widget.user),
                         ),
                       );
                       if (result == true) {
@@ -323,10 +325,12 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                       ),
                     ),
                     title: const Text('Manage Shipping Addresses'),
-                    subtitle: const Text('Add, edit, or remove your shipping addresses'),
+                    subtitle: const Text(
+                        'Add, edit, or remove your shipping addresses'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                      final userId =
+                          FirebaseAuth.instance.currentUser?.uid ?? '';
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -353,7 +357,8 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                     subtitle: const Text('Add or remove your payment methods'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                      final userId =
+                          FirebaseAuth.instance.currentUser?.uid ?? '';
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -365,9 +370,9 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Account Actions
             Text(
               'Account Actions',
@@ -376,7 +381,7 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Card(
               child: Column(
                 children: [
@@ -407,7 +412,7 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
       ),
     );
   }
-  
+
   void _showDeleteAccountDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -430,7 +435,8 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
                 // TODO: Implement account deletion
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Account deletion feature will be added later'),
+                    content:
+                        Text('Account deletion feature will be added later'),
                   ),
                 );
               },
@@ -444,4 +450,4 @@ class _ProfileManagementPageState extends State<ProfileManagementPage> {
       },
     );
   }
-} 
+}
