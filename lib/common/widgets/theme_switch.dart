@@ -9,7 +9,7 @@ class ThemeSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
         return Container(
@@ -24,8 +24,8 @@ class ThemeSwitch extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                themeMode == ThemeMode.dark 
-                    ? Icons.dark_mode 
+                themeMode == ThemeMode.dark
+                    ? Icons.dark_mode
                     : Icons.light_mode,
                 color: AppColors.primary,
                 size: 24,
@@ -43,11 +43,10 @@ class ThemeSwitch extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      themeMode == ThemeMode.dark 
-                          ? 'Dark Mode' 
-                          : 'Light Mode',
+                      themeMode == ThemeMode.dark ? 'Dark Mode' : 'Light Mode',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                        color:
+                            theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -69,4 +68,4 @@ class ThemeSwitch extends StatelessWidget {
       },
     );
   }
-} 
+}

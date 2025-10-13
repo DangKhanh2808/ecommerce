@@ -16,19 +16,19 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTap: () {
         AppNavigator.push(
-            context,
-            Provider<GetRelatedProductsUseCase>(
-              create: (_) => GetRelatedProductsUseCase(
-                Provider.of<ProductRepository>(context, listen: false),
-              ),
-              child: ProductDetailPage(
-                productEntity: productEntity,
-              ),
+          context,
+          Provider<GetRelatedProductsUseCase>(
+            create: (_) => GetRelatedProductsUseCase(
+              Provider.of<ProductRepository>(context, listen: false),
             ),
+            child: ProductDetailPage(
+              productEntity: productEntity,
+            ),
+          ),
         );
       },
       child: Card(
@@ -52,13 +52,13 @@ class ProductCard extends StatelessWidget {
             children: [
               // Image section
               SizedBox(
-                height: 130,
+                height: 195,
                 width: double.infinity,
                 child: Stack(
                   children: [
                     Container(
                       width: double.infinity,
-                      height: 130,
+                      height: 200,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: const BorderRadius.only(
@@ -73,7 +73,8 @@ class ProductCard extends StatelessWidget {
                                     productEntity.images[0],
                                   ),
                                 )
-                              : const AssetImage('assets/images/not_found.png') as ImageProvider,
+                              : const AssetImage('assets/images/not_found.png')
+                                  as ImageProvider,
                         ),
                       ),
                     ),

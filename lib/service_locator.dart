@@ -251,18 +251,28 @@ Future<void> initializeDependencies() async {
 
   // Đăng ký Address
   sl.registerSingleton<AddressFirebaseService>(AddressFirebaseService());
-  sl.registerSingleton<AddressRepository>(AddressRepositoryImpl(sl<AddressFirebaseService>()));
-  sl.registerSingleton<GetAddressesUseCase>(GetAddressesUseCase(sl<AddressRepository>()));
-  sl.registerSingleton<AddAddressUseCase>(AddAddressUseCase(sl<AddressRepository>()));
-  sl.registerSingleton<UpdateAddressUseCase>(UpdateAddressUseCase(sl<AddressRepository>()));
-  sl.registerSingleton<DeleteAddressUseCase>(DeleteAddressUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<AddressRepository>(
+      AddressRepositoryImpl(sl<AddressFirebaseService>()));
+  sl.registerSingleton<GetAddressesUseCase>(
+      GetAddressesUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<AddAddressUseCase>(
+      AddAddressUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<UpdateAddressUseCase>(
+      UpdateAddressUseCase(sl<AddressRepository>()));
+  sl.registerSingleton<DeleteAddressUseCase>(
+      DeleteAddressUseCase(sl<AddressRepository>()));
 
   // Đăng ký PaymentMethod
-  sl.registerSingleton<PaymentMethodFirebaseService>(PaymentMethodFirebaseService());
-  sl.registerSingleton<PaymentMethodRepository>(PaymentMethodRepositoryImpl(sl<PaymentMethodFirebaseService>()));
-  sl.registerSingleton<GetPaymentMethodsUseCase>(GetPaymentMethodsUseCase(sl<PaymentMethodRepository>()));
-  sl.registerSingleton<AddPaymentMethodUseCase>(AddPaymentMethodUseCase(sl<PaymentMethodRepository>()));
-  sl.registerSingleton<DeletePaymentMethodUseCase>(DeletePaymentMethodUseCase(sl<PaymentMethodRepository>()));
+  sl.registerSingleton<PaymentMethodFirebaseService>(
+      PaymentMethodFirebaseService());
+  sl.registerSingleton<PaymentMethodRepository>(
+      PaymentMethodRepositoryImpl(sl<PaymentMethodFirebaseService>()));
+  sl.registerSingleton<GetPaymentMethodsUseCase>(
+      GetPaymentMethodsUseCase(sl<PaymentMethodRepository>()));
+  sl.registerSingleton<AddPaymentMethodUseCase>(
+      AddPaymentMethodUseCase(sl<PaymentMethodRepository>()));
+  sl.registerSingleton<DeletePaymentMethodUseCase>(
+      DeletePaymentMethodUseCase(sl<PaymentMethodRepository>()));
 
   sl.registerLazySingleton<GetAllProductsUseCase>(
     () => GetAllProductsUseCase(sl<ProductRepository>()),

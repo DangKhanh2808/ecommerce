@@ -6,6 +6,8 @@ import 'package:ecommerce/domain/auth/entity/user.dart';
 import 'package:ecommerce/presentation/cart/views/cart.dart';
 import 'package:ecommerce/presentation/home/user/bloc/user_infor_display_cubit.dart';
 import 'package:ecommerce/presentation/home/user/bloc/user_infor_display_state.dart';
+import 'package:ecommerce/presentation/cart/bloc/cart_products_display_cubit.dart';
+import 'package:ecommerce/presentation/cart/bloc/cart_products_display_state.dart';
 import 'package:ecommerce/presentation/settings/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +20,15 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    return BlocProvider(
-      create: (context) => UserInforDisplayCubit()..displayUserInfor(),
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => UserInforDisplayCubit()..displayUserInfor()),
+        BlocProvider(
+            create: (context) =>
+                CartProductsDisplayCubit()..displayCartProduct()),
+      ],
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.only(
@@ -64,8 +72,8 @@ class Header extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    state.user.firstName.isNotEmpty 
-                        ? state.user.firstName 
+                    state.user.firstName.isNotEmpty
+                        ? state.user.firstName
                         : AppStrings.user,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
@@ -206,27 +214,68 @@ class Header extends StatelessWidget {
       onTap: () {
         AppNavigator.push(context, const CartPage());
       },
-      child: Container(
+      child: SizedBox(
         height: 48,
         width: 48,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: Colors.white.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            AppVectors.bag,
-            height: 20,
-            width: 20,
-            colorFilter: const ColorFilter.mode(
-              Colors.white,
-              BlendMode.srcIn,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  AppVectors.bag,
+                  height: 20,
+                  width: 20,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
             ),
-          ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: BlocBuilder<CartProductsDisplayCubit,
+                  CartProductsDisplayState>(
+                builder: (context, state) {
+                  int count = 0;
+                  if (state is CartProductsLoaded) {
+                    count = state.products
+                        .fold(0, (sum, p) => sum + p.productQuantity);
+                  }
+                  if (count == 0) return const SizedBox.shrink();
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white, width: 1),
+                    ),
+                    constraints:
+                        const BoxConstraints(minWidth: 18, minHeight: 18),
+                    child: Text(
+                      count > 99 ? '99+' : '$count',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

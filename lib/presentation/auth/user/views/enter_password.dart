@@ -13,14 +13,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../common/bloc/button/button_state.dart';
 import 'package:ecommerce/service_locator.dart';
 
-class EnterPasswordPage extends StatelessWidget {
+class EnterPasswordPage extends StatefulWidget {
   final UserSigninReq signinReq;
-  EnterPasswordPage({
+  const EnterPasswordPage({
     required this.signinReq,
     super.key,
   });
 
-  final TextEditingController _passwordCon = TextEditingController();
+  @override
+  State<EnterPasswordPage> createState() => _EnterPasswordPageState();
+}
+
+class _EnterPasswordPageState extends State<EnterPasswordPage> {
+  late final TextEditingController _passwordCon;
+  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordCon = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _passwordCon.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +99,25 @@ class EnterPasswordPage extends StatelessWidget {
   Widget _passwordField(BuildContext context) {
     return TextField(
       controller: _passwordCon,
-      decoration: const InputDecoration(hintText: 'Enter Password'),
+      obscureText: _obscurePassword,
+      obscuringCharacter: '•',
+      enableSuggestions: false,
+      autocorrect: false,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.visiblePassword,
+      autofillHints: const [AutofillHints.password],
+      decoration: InputDecoration(
+        hintText: 'Enter Password',
+        suffixIcon: IconButton(
+          icon:
+              Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
+          },
+        ),
+      ),
     );
   }
 
@@ -89,9 +125,10 @@ class EnterPasswordPage extends StatelessWidget {
     return Builder(builder: (context) {
       return BasicReactiveButton(
           onPressed: () {
-            signinReq.password = _passwordCon.text;
+            widget.signinReq.password = _passwordCon.text;
 
-            if (signinReq.email == null || signinReq.email!.isEmpty) {
+            if (widget.signinReq.email == null ||
+                widget.signinReq.email!.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Email cannot be empty'),
@@ -100,9 +137,8 @@ class EnterPasswordPage extends StatelessWidget {
               return;
             }
 
-            context
-                .read<ButtonStateCubit>()
-                .execute(usecase: sl<SigninUseCase>(), params: signinReq);
+            context.read<ButtonStateCubit>().execute(
+                usecase: sl<SigninUseCase>(), params: widget.signinReq);
           },
           title: 'Continue');
     });

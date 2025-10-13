@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 119, 188, 199),
+                      color: const Color.fromARGB(207, 255, 255, 255),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(24),
                         topRight: Radius.circular(24),
