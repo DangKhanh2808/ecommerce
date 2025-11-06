@@ -11,6 +11,10 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+lib/backend/serviceAccountKey.json
+# Firebase key
+serviceAccountKey.json
+
 
 # IntelliJ related
 *.iml

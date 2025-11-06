@@ -12,7 +12,7 @@ import 'package:ecommerce/data/order/model/order_registration_req.dart';
 import 'package:ecommerce/domain/order/usecases/order_registration.dart';
 import 'package:ecommerce/service_locator.dart';
 import 'dart:async';
-import 'package:ecommerce/core/service/pay_with_paypal.dart';
+import 'package:ecommerce/core/services/pay_with_paypal.dart';
 
 class CheckOutPage extends StatefulWidget {
   final List<ProductOrderedEntity> products;
@@ -48,7 +48,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
       child: BlocListener<ButtonStateCubit, ButtonState>(
         listener: (context, state) {
           print('🔄 ButtonState changed: ${state.runtimeType}');
-          
+
           if (state is ButtonLoadingState) {
             print('⏳ ButtonLoadingState received, showing loading...');
             // Hiển thị loading dialog
@@ -68,9 +68,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
               },
             );
           }
-          
+
           if (state is ButtonSuccessState) {
-            print('✅ ButtonSuccessState received, navigating to OrderPlacedPage');
+            print(
+                '✅ ButtonSuccessState received, navigating to OrderPlacedPage');
             // Đóng loading dialog nếu có
             Navigator.of(context).pop();
             // Hiển thị thông báo thành công
@@ -88,13 +89,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
               (route) => false,
             );
           }
-          
+
           if (state is ButtonFailureState) {
             print('❌ ButtonFailureState received: ${state.errorMessage}');
             // Đóng loading dialog nếu có
             Navigator.of(context).pop();
             var snackbar = SnackBar(
-                              content: Text('Error: ${state.errorMessage}'),
+              content: Text('Error: ${state.errorMessage}'),
               backgroundColor: Colors.red,
               behavior: SnackBarBehavior.floating,
             );
@@ -112,7 +113,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 });
               });
             }
-            
+
             return Scaffold(
               appBar: AppBar(
                 title: const Text('Checkout'),
@@ -151,7 +152,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 onPressed: () {
                                   _processPayPalPayment();
                                 },
-                                icon: const Icon(Icons.payment, color: Colors.white),
+                                icon: const Icon(Icons.payment,
+                                    color: Colors.white),
                                 label: const Text(
                                   'Pay with PayPal',
                                   style: TextStyle(
@@ -171,7 +173,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 onPressed: () {
                                   _processCardPayment(context);
                                 },
-                                icon: const Icon(Icons.credit_card, color: Colors.white),
+                                icon: const Icon(Icons.credit_card,
+                                    color: Colors.white),
                                 label: const Text(
                                   'Pay with Card',
                                   style: TextStyle(
@@ -180,7 +183,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF0070BA), // PayPal blue
+                                  backgroundColor:
+                                      const Color(0xFF0070BA), // PayPal blue
                                 ),
                               ),
                             ),
@@ -205,56 +209,63 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             ),
                             const SizedBox(height: 16),
                             // Products list
-                            ...widget.products.map((product) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Container(
-                                      width: 50,
-                                      height: 50,
-                                      color: Colors.blueGrey.shade100,
-                                      child: const Icon(Icons.image, color: Colors.blueGrey, size: 32),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          product.productTitle,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w500,
+                            ...widget.products
+                                .map((product) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Container(
+                                              width: 50,
+                                              height: 50,
+                                              color: Colors.blueGrey.shade100,
+                                              child: const Icon(Icons.image,
+                                                  color: Colors.blueGrey,
+                                                  size: 32),
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          'Size: ${product.productSize} | Color: ${product.productColor}',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 12,
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  product.productTitle,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Size: ${product.productSize} | Color: ${product.productColor}',
+                                                  style: TextStyle(
+                                                    color: Colors.grey[600],
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Qty: ${product.productQuantity}',
+                                                  style: TextStyle(
+                                                    color: Colors.grey[600],
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          'Qty: ${product.productQuantity}',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 12,
+                                          Text(
+                                            '\$${product.totalPrice}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    '\$${product.totalPrice}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )).toList(),
+                                        ],
+                                      ),
+                                    ))
+                                .toList(),
                             const Divider(),
                             // Subtotal
                             Row(
@@ -288,7 +299,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                   ),
                                 ),
                                 Text(
-                                  shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
+                                  shipping == 0
+                                      ? 'Free'
+                                      : '\$${shipping.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -396,12 +409,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             const SizedBox(height: 4),
                             Text(
                               'Shipping: ${shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}'}',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'Estimated delivery: 3-5 business days',
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -428,8 +443,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          final subtotal = CartHelper.calculateCartSubtotal(widget.products);
-                          final shipping = CartHelper.calculateShippingCost(widget.products);
+                          final subtotal =
+                              CartHelper.calculateCartSubtotal(widget.products);
+                          final shipping =
+                              CartHelper.calculateShippingCost(widget.products);
                           final tax = 0.0;
                           final total = subtotal + shipping + tax;
                           _placeOrderWithCubit(total);
@@ -460,24 +477,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   void _processPayPalPayment() async {
     print('💳 Processing PayPal payment...');
-    
+
     try {
       final subtotal = CartHelper.calculateCartSubtotal(widget.products);
       final shipping = CartHelper.calculateShippingCost(widget.products);
       final tax = 0.0;
       final total = subtotal + shipping + tax;
-      
+
       // Sử dụng method mới với xác nhận đơn hàng
       await PayPalService.createPaymentWithConfirmation(
         total: total,
         context: context,
         products: widget.products,
-        shippingAddress: _addressController.text.isNotEmpty 
-            ? _addressController.text 
+        shippingAddress: _addressController.text.isNotEmpty
+            ? _addressController.text
             : 'Default Address',
       );
       print('✅ PayPal payment created successfully');
-      
     } catch (e) {
       print('❌ PayPal payment error: $e');
       if (mounted) {
@@ -499,7 +515,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
     print('Processing card payment...');
     print('   - Total: \$${total}');
     print('   - Products count: ${widget.products.length}');
-    
+
     // Simulate card payment processing
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -514,13 +530,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
     print('🚀 Placing order with stored cubit...');
     print('   - Total: \$${CartHelper.calculateCartSubtotal(widget.products)}');
     print('   - Products count: ${widget.products.length}');
-    
+
     // Hiển thị dialog xác nhận
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-                      title: const Text('Confirm Order'),
+          title: const Text('Confirm Order'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,7 +545,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
               const SizedBox(height: 8),
               Text('Number of products: ${widget.products.length}'),
               const SizedBox(height: 8),
-              Text('Shipping address: ${_addressController.text.isNotEmpty ? _addressController.text : 'Default Address'}'),
+              Text(
+                  'Shipping address: ${_addressController.text.isNotEmpty ? _addressController.text : 'Default Address'}'),
               const SizedBox(height: 16),
               const Text('Are you sure you want to place this order?'),
             ],
@@ -562,24 +579,24 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   void _confirmAndPlaceOrder(double total) {
     print('✅ User confirmed order, proceeding with placement...');
-    
+
     // Tạo OrderRegistrationReq với orderId tự động
     final orderReq = OrderRegistrationReq(
       products: widget.products,
       createdDate: DateTime.now().toIso8601String(),
-      shippingAddress: _addressController.text.isNotEmpty 
-          ? _addressController.text 
+      shippingAddress: _addressController.text.isNotEmpty
+          ? _addressController.text
           : 'Default Address',
       itemCount: widget.products.length,
       totalPrice: total,
     );
-    
+
     print('📦 OrderRequest created: ${orderReq.toMap()}');
-    
+
     // Sử dụng stored ButtonStateCubit instance
     if (_buttonStateCubit != null) {
       print('🔍 ButtonStateCubit found: ${_buttonStateCubit.runtimeType}');
-      
+
       _buttonStateCubit!.execute(
         usecase: sl<OrderRegistrationUseCase>(),
         params: orderReq,

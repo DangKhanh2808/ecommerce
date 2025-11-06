@@ -3,7 +3,7 @@ import 'package:ecommerce/data/auth/repository/auth_respository_imple.dart';
 import 'package:ecommerce/data/auth/sources/auth_firebase_service.dart';
 import 'package:ecommerce/data/category/repository/category.dart';
 import 'package:ecommerce/data/category/sources/category_firebase_service.dart';
-import 'package:ecommerce/data/order/repository/order.dart';
+import 'package:ecommerce/data/order/repository/order_repository_impl.dart';
 import 'package:ecommerce/data/order/source/order_firebase_service.dart';
 import 'package:ecommerce/data/product/repository/product.dart';
 import 'package:ecommerce/data/product/repository/review.dart';

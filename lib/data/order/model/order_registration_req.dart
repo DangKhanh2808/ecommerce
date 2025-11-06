@@ -22,9 +22,9 @@ class OrderRegistrationReq {
     String? code,
     String? orderId,
     List<OrderStatusModel>? orderStatus,
-  }) : code = code ?? _generateCode(),
-       orderId = orderId ?? _generateOrderId(),
-       orderStatus = orderStatus ?? _generateInitialOrderStatus();
+  })  : code = code ?? _generateCode(),
+        orderId = orderId ?? _generateOrderId(),
+        orderStatus = orderStatus ?? _generateInitialOrderStatus();
 
   static String _generateCode() {
     final now = DateTime.now();
@@ -72,6 +72,26 @@ class OrderRegistrationReq {
       'code': code,
       'orderId': orderId,
       'orderStatus': orderStatus.map((e) => e.toMap()).toList(),
+    };
+  }
+
+  Map<String, dynamic> toBackendJson(String userId) {
+    return {
+      "userId": userId,
+      "shippingAddress": shippingAddress,
+      "totalPrice": totalPrice,
+      "items": products.map((p) {
+        return {
+          "productDocId": p.productId,
+          "productTitle": p.productTitle,
+          "productImage": p.productImage,
+          "productSize": p.productSize,
+          "productColor": p.productColor,
+          "productPrice": p.productPrice,
+          "productQuantity": p.productQuantity,
+          "totalPrice": p.totalPrice,
+        };
+      }).toList()
     };
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce/core/service/pay_with_paypal.dart';
+import 'package:ecommerce/core/services/pay_with_paypal.dart';
 import 'package:ecommerce/domain/order/entities/product_oredered.dart';
 
 /// Demo page để test luồng thanh toán PayPal
