@@ -29,12 +29,14 @@ import 'package:ecommerce/domain/category/repository/category.dart';
 import 'package:ecommerce/domain/category/usecases/get_categories.dart';
 import 'package:ecommerce/domain/order/repository/order.dart';
 import 'package:ecommerce/domain/order/usecases/add_to_cart.dart';
+import 'package:ecommerce/domain/order/usecases/admin_get_all_orders.dart';
 import 'package:ecommerce/domain/order/usecases/cancel_order.dart';
 import 'package:ecommerce/domain/order/usecases/get_cart_products.dart';
 import 'package:ecommerce/domain/order/usecases/get_orders.dart';
 import 'package:ecommerce/domain/order/usecases/order_registration.dart';
 import 'package:ecommerce/domain/order/usecases/rebuy_product.dart';
 import 'package:ecommerce/domain/order/usecases/remove_cart_products.dart';
+import 'package:ecommerce/domain/order/usecases/update_order_status.dart';
 import 'package:ecommerce/domain/product/repository/product.dart';
 import 'package:ecommerce/domain/product/repository/review.dart';
 import 'package:ecommerce/domain/product/usecases/add_or_remove_favorite_product.dart';
@@ -249,6 +251,13 @@ Future<void> initializeDependencies() async {
     ChangePasswordUseCase(sl<AuthRepository>()),
   );
 
+  sl.registerSingleton<UpdateOrderStatusUseCase>(
+    UpdateOrderStatusUseCase(sl<OrderRepository>()),
+  );
+
+  sl.registerSingleton<AdminGetAllOrdersUseCase>(
+    AdminGetAllOrdersUseCase(sl<OrderRepository>()),
+  );
   // Đăng ký Address
   sl.registerSingleton<AddressFirebaseService>(AddressFirebaseService());
   sl.registerSingleton<AddressRepository>(

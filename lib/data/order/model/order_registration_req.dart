@@ -42,22 +42,22 @@ class OrderRegistrationReq {
       OrderStatusModel(
         title: 'Order Placed',
         done: true,
-        createdDate: now,
+        createdDate: DateTime.now(),
       ),
       OrderStatusModel(
         title: 'Processing',
         done: true,
-        createdDate: now,
+        createdDate: DateTime.now(),
       ),
       OrderStatusModel(
         title: 'Shipped',
         done: false,
-        createdDate: now,
+        createdDate: DateTime.now(),
       ),
       OrderStatusModel(
         title: 'Delivered',
         done: false,
-        createdDate: now,
+        createdDate: DateTime.now(),
       ),
     ];
   }

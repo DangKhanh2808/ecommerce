@@ -22,251 +22,170 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   bool _isLoading = false;
   bool _isCancelling = false;
 
-  // Kiểm tra xem đơn hàng có thể hủy được không
   bool _canCancelOrder() {
-    // Kiểm tra xem đơn hàng đã bị hủy chưa
-    bool isCancelled = widget.orderEntity.orderStatus.any((status) => 
-        status.title == 'Cancelled' && status.done == true);
-    
-    // Kiểm tra xem đơn hàng đã được giao chưa
-    bool isDelivered = widget.orderEntity.orderStatus.any((status) => 
-        status.title == 'Delivered' && status.done == true);
-    
-    // Kiểm tra xem đơn hàng đã được ship chưa
-    bool isShipped = widget.orderEntity.orderStatus.any((status) => 
-        status.title == 'Shipped' && status.done == true);
-    
-    // Chỉ có thể hủy nếu chưa bị hủy, chưa được giao và chưa được ship
+    final statuses = widget.orderEntity.orderStatus;
+
+    final isCancelled =
+        statuses.any((s) => s.title == 'Cancelled' && s.done == true);
+    final isDelivered =
+        statuses.any((s) => s.title == 'Delivered' && s.done == true);
+    final isShipped =
+        statuses.any((s) => s.title == 'Shipped' && s.done == true);
+
     return !isCancelled && !isDelivered && !isShipped;
   }
 
   Future<void> _rebuyAllProducts() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      int successCount = 0;
-      int totalProducts = widget.orderEntity.products.length;
+      int success = 0;
 
       for (var product in widget.orderEntity.products) {
-        final result = await sl<RebuyProductUseCase>().call(
-          params: product,
-        );
+        final res = await sl<RebuyProductUseCase>().call(params: product);
 
-        result.fold(
-          (error) {
-            // Continue with other products even if one fails
-          },
-          (success) {
-            successCount++;
-          },
+        res.fold(
+          (error) {},
+          (ok) => success++,
         );
       }
 
-      if (successCount == totalProducts) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('All $totalProducts products added to cart successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else if (successCount > 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$successCount out of $totalProducts products added to cart successfully.'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add products to cart. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$success products added to cart!'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('An error occurred. Please try again.'),
+          content: Text('Something went wrong!'),
           backgroundColor: Colors.red,
         ),
       );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+
+    setState(() => _isLoading = false);
   }
 
   Future<void> _cancelOrder() async {
-    // Hiển thị dialog nhập lý do hủy
-    String? cancelReason = await showDialog<String>(
+    final reason = await showDialog<String>(
       context: context,
-      builder: (BuildContext context) {
-        return CancelOrderDialog();
+      builder: (_) => CancelOrderDialog(),
+    );
+
+    if (reason == null || reason.trim().isEmpty) return;
+
+    setState(() => _isCancelling = true);
+
+    final result = await sl<CancelOrderUseCase>().call(params: {
+      "orderCode": widget.orderEntity.code,
+      "cancelReason": reason
+    });
+
+    result.fold(
+      (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error), backgroundColor: Colors.red),
+        );
+      },
+      (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Order cancelled!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.of(context).pop(true);
       },
     );
 
-    if (cancelReason == null || cancelReason.trim().isEmpty) return;
-
-    setState(() {
-      _isCancelling = true;
-    });
-
-    try {
-      final result = await sl<CancelOrderUseCase>().call(
-        params: {
-          'orderId': widget.orderEntity.orderId,
-          'cancelReason': cancelReason,
-        },
-      );
-
-      result.fold(
-        (error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error),
-              backgroundColor: Colors.red,
-            ),
-          );
-        },
-        (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Order has been cancelled successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          // Quay lại trang trước và refresh danh sách đơn hàng
-          Navigator.of(context).pop(true);
-        },
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-                      content: Text('An error occurred. Please try again.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isCancelling = false;
-      });
-    }
+    setState(() => _isCancelling = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: BasicAppbar(
-          title: Text(
-            'Order #${widget.orderEntity.code.length > 10 ? '${widget.orderEntity.code.substring(0, 10)}...' : widget.orderEntity.code}',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
+      appBar: BasicAppbar(
+        title: Text(
+          'Order #${widget.orderEntity.code.substring(0, 10)}',
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _status(),
-              const SizedBox(
-                height: 50,
-              ),
-              _items(context),
-              const SizedBox(
-                height: 30,
-              ),
-              _shipping()
-            ],
-          ),
-        ));
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _status(),
+            const SizedBox(height: 30),
+            _items(context),
+            const SizedBox(height: 30),
+            _shipping(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _status() {
+    final statuses = widget.orderEntity.orderStatus;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: ThemeHelper.getCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Order Status',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: ThemeHelper.getTextPrimaryColor(context),
-            ),
-          ),
+          Text("Order Status",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: ThemeHelper.getTextPrimaryColor(context))),
           const SizedBox(height: 20),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final status = widget.orderEntity.orderStatus[index];
+            itemCount: statuses.length,
+            reverse: true,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (_, i) {
+              final s = statuses[i];
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 36,
-                          width: 36,
-                          decoration: BoxDecoration(
-                            color: ThemeHelper.getStatusColor(context, status.done),
-                            shape: BoxShape.circle,
-                            boxShadow: status.done ? [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ] : null,
-                          ),
-                          child: status.done
-                              ? const Icon(Icons.check, color: Colors.white, size: 20)
-                              : Container(),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            status.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: ThemeHelper.getStatusTextColor(context, status.done),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Text(
-                      status.createdDate.toDate().toString().split(' ')[0].length > 10 
-                          ? '${status.createdDate.toDate().toString().split(' ')[0].substring(0, 10)}...'
-                          : status.createdDate.toDate().toString().split(' ')[0],
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: ThemeHelper.getStatusTextColor(context, status.done),
+                  Row(children: [
+                    Container(
+                      height: 32,
+                      width: 32,
+                      decoration: BoxDecoration(
+                        color: s.done ? Colors.green : Colors.grey.shade400,
+                        shape: BoxShape.circle,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      child: s.done
+                          ? const Icon(Icons.check, color: Colors.white, size: 18)
+                          : null,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      s.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: ThemeHelper.getTextPrimaryColor(context),
+                      ),
+                    ),
+                  ]),
+                  Text(
+                    "${s.createdDate.year}-${s.createdDate.month}-${s.createdDate.day}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ThemeHelper.getTextSecondaryColor(context),
                     ),
                   ),
                 ],
               );
             },
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
-            reverse: true,
-            itemCount: widget.orderEntity.orderStatus.length,
           ),
         ],
       ),
@@ -280,160 +199,74 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            "Order Items",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: ThemeHelper.getTextPrimaryColor(context),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ----- ACTION BUTTONS -----
+          Row(
             children: [
-              Text(
-                'Order Items',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: ThemeHelper.getTextPrimaryColor(context),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                height: 40,
+              Expanded(
                 child: ElevatedButton.icon(
                   onPressed: _isLoading ? null : _rebuyAllProducts,
                   icon: _isLoading
                       ? const SizedBox(
-                          width: 16,
                           height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Icon(Icons.shopping_cart, size: 16),
-                  label: Text(
-                    _isLoading ? 'Adding...' : 'Rebuy All',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 2,
+                          width: 16,
+                          child:
+                              CircularProgressIndicator(color: Colors.white))
+                      : const Icon(Icons.shopping_cart),
+                  label: Text(_isLoading ? "Adding..." : "Rebuy All"),
+                ),
+              ),
+              if (_canCancelOrder()) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: _isCancelling ? null : _cancelOrder,
+                    icon: _isCancelling
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(
+                                color: Colors.white))
+                        : const Icon(Icons.cancel),
+                    label: Text(_isCancelling ? "Cancelling..." : "Cancel"),
                   ),
                 ),
-                    ),
-                  ),
-                  if (_canCancelOrder()) ...[
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: SizedBox(
-                        height: 40,
-                        child: ElevatedButton.icon(
-                          onPressed: _isCancelling ? null : _cancelOrder,
-                          icon: _isCancelling
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : const Icon(Icons.cancel, size: 16),
-                          label: Text(
-                            _isCancelling ? 'Cancelling...' : 'Cancel Order',
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+              ]
             ],
           ),
+
           const SizedBox(height: 20),
+
           GestureDetector(
             onTap: () {
               AppNavigator.push(
-                  context, OrderItemsPage(products: widget.orderEntity.products));
+                context,
+                OrderItemsPage(products: widget.orderEntity.products),
+              );
             },
             child: Container(
-              width: double.infinity,
-              height: 80,
               padding: const EdgeInsets.all(16),
               decoration: ThemeHelper.getContainerDecoration(context),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.receipt_rounded,
-                            color: AppColors.primary,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${widget.orderEntity.products.length > 999 ? '999+' : widget.orderEntity.products.length} Items',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: ThemeHelper.getTextPrimaryColor(context),
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'View all products',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 11,
-                                  color: ThemeHelper.getTextSecondaryColor(context),
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: ThemeHelper.getIconSecondaryColor(context),
-                    size: 16,
-                  ),
+                  Text("${widget.orderEntity.products.length} items",
+                      style: TextStyle(
+                          color: ThemeHelper.getTextPrimaryColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600)),
+                  Icon(Icons.arrow_forward_ios_rounded,
+                      color: ThemeHelper.getIconSecondaryColor(context)),
                 ],
               ),
             ),
@@ -452,52 +285,23 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.location_on_outlined,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Shipping Details',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: ThemeHelper.getTextPrimaryColor(context),
-                ),
-              ),
+              const Icon(Icons.location_on_outlined),
+              const SizedBox(width: 8),
+              Text("Shipping Details",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: ThemeHelper.getTextPrimaryColor(context))),
             ],
           ),
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: ThemeHelper.getSecondBackgroundColor(context),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: ThemeHelper.getBorderColor(context),
-                width: 0.5,
-              ),
+          const SizedBox(height: 12),
+          Text(
+            widget.orderEntity.shippingAddress,
+            style: TextStyle(
+              fontSize: 16,
+              color: ThemeHelper.getTextPrimaryColor(context),
             ),
-            child: Text(
-              widget.orderEntity.shippingAddress,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: ThemeHelper.getTextPrimaryColor(context),
-                height: 1.4,
-              ),
-              overflow: TextOverflow.visible,
-            ),
-          ),
+          )
         ],
       ),
     );
@@ -510,68 +314,28 @@ class CancelOrderDialog extends StatefulWidget {
 }
 
 class _CancelOrderDialogState extends State<CancelOrderDialog> {
-  final TextEditingController _reasonController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _reasonController.dispose();
-    super.dispose();
-  }
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Cancel Order'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Please provide a reason for cancelling this order:',
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _reasonController,
-              decoration: const InputDecoration(
-                labelText: 'Cancellation Reason',
-                hintText: 'Enter the reason for cancellation...',
-                border: OutlineInputBorder(),
-                filled: true,
-              ),
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter a cancellation reason';
-                }
-                if (value.trim().length < 10) {
-                  return 'Reason must be at least 10 characters';
-                }
-                return null;
-              },
-            ),
-          ],
+      title: const Text("Cancel Order"),
+      content: TextField(
+        controller: _controller,
+        maxLines: 3,
+        decoration: const InputDecoration(
+          labelText: "Reason",
+          border: OutlineInputBorder(),
         ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close")),
         ElevatedButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              Navigator.of(context).pop(_reasonController.text.trim());
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-          ),
-          child: const Text('Confirm Cancellation'),
+          onPressed: () =>
+              Navigator.pop(context, _controller.text.trim()),
+          child: const Text("Confirm"),
         ),
       ],
     );

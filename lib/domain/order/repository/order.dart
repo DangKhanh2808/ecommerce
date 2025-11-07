@@ -11,4 +11,13 @@ abstract class OrderRepository {
   Future<Either> getOrders();
   Future<Either> rebuyProduct(ProductOrderedEntity product);
   Future<Either> cancelOrder(String orderId, String cancelReason);
+  Future<Either> getOrderDetails(String orderId);
+  Future<Either<String, dynamic>> getAllOrders();
+
+  /// ✅ Admin update order status
+  Future<Either<String, String>> updateOrderStatus({
+    required String code,
+    required String status,
+    String? note,
+  });
 }
